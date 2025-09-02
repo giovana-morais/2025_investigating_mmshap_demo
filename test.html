@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>D3.js Shapley Analysis Visualization</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 20px;
+            background-color: #f9f9f9;
+        }
+        h2 {
+            font-weight: 500;
+        }
+        .text-container {
+            width: 800px;
+            padding: 10px;
+            line-height: 2.2;
+            font-size: 16px;
+            font-family: "monospace";
+            margin-bottom: 20px;
+        }
+        .token {
+            padding: 4px 2px;
+            border-radius: 4px;
+            transition: all 0.2s ease-in-out;
+        }
+        .y-axis-label {
+            font-size: 12px;
+            text-anchor: end;
+        }
+        .plot-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Model Interpretation via Shapley Values</h2>
+
+    <div class="plot-container">
+      <div id="text-viz" class="text-container"></div>
+      <div id="audio-viz"></div>
+    </div>
+
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script>
+        // --- 1. MOCK DATA ---
+        // Equivalent to the Python function arguments
+
+        const question_tokens = "which instrument is playing the melody at the beginning of the piece".split(" ");
+        // Generate random shapley values for text
+        const text_shapley_values = Array.from({ length: question_tokens.length }, () => Math.random() * Math.random());
+
+        const sample_rate = 16000;
+        const total_duration = 10; // 10 seconds
+        const num_audio_samples = sample_rate * total_duration;
+        const num_shapley_samples = 200; // Shapley values are at a lower temporal resolution
+
+        // Generate a noisy sine wave for the audio signal
+        const audio_signal = Array.from({ length: num_audio_samples }, (_, i) => {
+            const t = i / sample_rate;
+            return 0.5 * Math.sin(2 * Math.PI * 2 * t) + (Math.random() - 0.5) * 0.2; // 2Hz sine + noise
+        });
+
+        // Generate plausible Shapley values with a few peaks
+        const audio_shapley_values = Array.from({ length: num_shapley_samples }, (_, i) => {
+            const t = i / num_shapley_samples;
+            let val = 0;
+            // Add a positive peak around 3s
+            if (t > 0.25 && t < 0.35) val += (Math.sin((t - 0.25) * Math.PI / 0.1))**2 * 0.8;
+            // Add a negative peak around 7s
+            if (t > 0.65 && t < 0.75) val -= (Math.sin((t - 0.65) * Math.PI / 0.1))**2 * 0.6;
+            return val + (Math.random() - 0.5) * 0.1; // Add some noise
+        });
+
+        const gt_start = 2.8; // Ground truth start time in seconds
+        const gt_end = 4.1;   // Ground truth end time in seconds
+
+        const colormap = d3.interpolateViridis;
+        const intensity_threshold = 0.8;
+
+        // --- 2. SETUP SVG AND DIMENSIONS ---
+
+        const margin = { top: 10, right: 80, bottom: 40, left: 80 };
+        const totalWidth = 1000;
+        const totalHeight = 500;
+        const width = totalWidth - margin.left - margin.right;
+        const height = totalHeight - margin.top - margin.bottom;
+
+        // Height ratios matching Python's GridSpec: [4,1,1,1] for audio part
+        const heightRatios = [4, 1.2, 1.2, 1.2];
+        const totalRatio = d3.sum(heightRatios);
+        const plotHeights = heightRatios.map(r => (height / totalRatio) * r);
+        const plotPads = 15; // Vertical padding between audio plots
+
+        const svg = d3.select("#audio-viz")
+            .append("svg")
+            .attr("width", totalWidth)
+            .attr("height", totalHeight)
+            .append("g")
+            .attr("transform", `translate(${margin.left},${margin.top})`);
+
+
+        // --- 3. SCALES ---
+
+        // Find the global max absolute shapley value for consistent color scaling
+        const maxTextShapley = d3.max(text_shapley_values, d => Math.abs(d));
+        const maxAudioShapley = d3.max(audio_shapley_values, d => Math.abs(d));
+        const max_abs_value = Math.max(maxTextShapley, maxAudioShapley);
+
+        // Color scale
+        const colorScale = d3.scaleSequential(colormap)
+            .domain([0, max_abs_value * 1.1]); // Add a bit of headroom
+
+        // X (Time) scale - shared across all audio plots
+        const xScale = d3.scaleLinear()
+            .domain([0, total_duration])
+            .range([0, width]);
+
+        // Y scale for the waveform
+        const yScaleSignal = d3.scaleLinear()
+            .domain(d3.extent(audio_signal))
+            .range([plotHeights[0], 0]);
+
+
+        // --- 4. RENDER TEXT VISUALIZATION (using HTML) ---
+
+        const textContainer = d3.select("#text-viz");
+        const textThreshold = intensity_threshold * maxTextShapley;
+
+        question_tokens.forEach((token, i) => {
+            const value = text_shapley_values[i];
+            const absValue = Math.abs(value);
+
+            const span = textContainer.append("span").text(token + " ");
+            if (absValue > textThreshold) {
+                const color = colorScale(absValue);
+                span.style("background-color", color);
+                // Set text color to white on dark backgrounds for readability
+                const L = 0.299 * d3.color(color).r + 0.587 * d3.color(color).g + 0.114 * d3.color(color).b;
+                if (L < 140) { // Luminance threshold
+                    span.style("color", "white");
+                }
+            }
+            span.classed("token", true);
+        });
+
+
+        // --- 5. RENDER AUDIO VISUALIZATION ---
+
+        let currentY = 0; // Keep track of vertical position for plots
+
+        // Plot 1: Audio Waveform
+        const signalGroup = svg.append("g")
+            .attr("transform", `translate(0, ${currentY})`);
+
+        const line = d3.line()
+            .x((_, i) => xScale(i / sample_rate))
+            .y(d => yScaleSignal(d));
+
+        signalGroup.append("path")
+            .datum(audio_signal)
+            .attr("fill", "none")
+            .attr("stroke", "gray")
+            .attr("stroke-width", 0.7)
+            .attr("opacity", 0.8)
+            .attr("d", line);
+
+        // Add Ground Truth Rectangle
+        signalGroup.append("rect")
+            .attr("x", xScale(gt_start))
+            .attr("width", xScale(gt_end) - xScale(gt_start))
+            .attr("y", 0)
+            .attr("height", plotHeights[0])
+            .attr("fill", "red")
+            .attr("opacity", 0.3);
+        
+        currentY += plotHeights[0] + plotPads;
+
+
+        // Plot 2, 3, 4: Shapley Heatmaps
+        const shapleyData = [
+            { label: "Absolute\nValue", values: audio_shapley_values.map(d => Math.abs(d))},
+            { label: "Positive\nOnly", values: audio_shapley_values.map(d => Math.max(0, d))},
+            { label: "Negative\nOnly", values: audio_shapley_values.map(d => Math.abs(Math.min(0, d)))}
+        ];
+
+        shapleyData.forEach((data, index) => {
+            const heatmapGroup = svg.append("g")
+                .attr("transform", `translate(0, ${currentY})`);
+
+            const rectWidth = width / data.values.length;
+
+            heatmapGroup.selectAll("rect")
+                .data(data.values)
+                .enter()
+                .append("rect")
+                .attr("x", (_, i) => xScale(i * (total_duration / num_shapley_samples)))
+                .attr("y", 0)
+                .attr("width", rectWidth + 0.5) // add 0.5 to prevent small gaps
+                .attr("height", plotHeights[index + 1])
+                .attr("fill", d => d > 0 ? colorScale(d) : '#FFFFFF');
+
+            // Add Y-axis labels
+            const labelLines = data.label.split('\n');
+            labelLines.forEach((line, i) => {
+                 heatmapGroup.append("text")
+                    .attr("class", "y-axis-label")
+                    .attr("x", -10)
+                    .attr("y", plotHeights[index + 1] / 2 - (labelLines.length-1)*6 + i*12)
+                    .text(line);
+            });
+
+            currentY += plotHeights[index + 1] + plotPads;
+        });
+
+
+        // --- 6. AXES and LEGENDS ---
+
+        // Add X-Axis (Time) at the bottom
+        const xAxis = d3.axisBottom(xScale);
+        svg.append("g")
+            .attr("transform", `translate(0, ${currentY - plotPads})`)
+            .call(xAxis);
+
+        svg.append("text")
+            .attr("text-anchor", "middle")
+            .attr("x", width / 2)
+            .attr("y", currentY + 20)
+            .text("Time (seconds)")
+            .style("font-size", "14px");
+
+
+        // Add Colorbar
+        const colorbarGroup = svg.append("g")
+            .attr("transform", `translate(${width + 20}, ${plotHeights[0] + plotPads})`); // Align with audio plots
+        
+        const colorbarHeight = d3.sum(plotHeights.slice(1)) + (plotPads * 2);
+
+        // Define the gradient
+        const gradient = colorbarGroup.append("defs")
+            .append("linearGradient")
+            .attr("id", "gradient")
+            .attr("x1", "0%")
+            .attr("x2", "0%")
+            .attr("y1", "100%")
+            .attr("y2", "0%");
+
+        gradient.selectAll("stop")
+            .data(d3.range(0, 1.01, 0.1))
+            .enter().append("stop")
+            .attr("offset", d => `${d * 100}%`)
+            .attr("stop-color", d => colormap(d));
+
+        // Draw the rectangle and fill with gradient
+        colorbarGroup.append("rect")
+            .attr("width", 20)
+            .attr("height", colorbarHeight)
+            .style("fill", "url(#gradient)");
+
+        // Add colorbar axis
+        const colorbarScale = d3.scaleLinear()
+            .domain([0, max_abs_value])
+            .range([colorbarHeight, 0]);
+
+        const colorbarAxis = d3.axisRight(colorbarScale).ticks(5);
+
+        colorbarGroup.append("g")
+            .attr("transform", `translate(20, 0)`)
+            .call(colorbarAxis);
+
+        colorbarGroup.append("text")
+            .attr("transform", "rotate(-90)")
+            .attr("x", -colorbarHeight / 2)
+            .attr("y", 50)
+            .attr("text-anchor", "middle")
+            .style("font-size", "12px")
+            .text("Shapley Value Magnitude");
+
+    </script>
+</body>
+</html>
