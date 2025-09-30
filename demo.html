@@ -1,0 +1,84 @@
+<DOCTYPE html>
+<meta charset="utf-8">
+
+<!-- Load d3.js -->
+<script src="https://d3js.org/d3.v4.js"></script>
+test
+
+<div id="waveform"></div>
+
+
+<script>
+	// set the dimensions and margins of the graph
+	var margin = {top: 10, right: 30, bottom: 30, left: 60},
+			width = 460 - margin.left - margin.right,
+			height = 400 - margin.top - margin.bottom;
+
+	// append the svg object to the body of the page
+	var svg = d3.select("#waveform")
+		.append("svg")
+			.attr("width", width + margin.left + margin.right)
+			.attr("height", height + margin.top + margin.bottom)
+		.append("g")
+			.attr("transform",
+						"translate(" + margin.left + "," + margin.top + ")");
+
+	// read data
+	d3.json("/data/719.json", function(error, data) {
+			if (error) {
+					console.error("error loading JSON", error);
+					return;
+				}
+
+			var audio_signal = data['signal'];
+			console.log(audio_signal);
+
+			let currentY = 0;
+			const signalGroup = svg
+				.append("g")
+				.attr("transform", `translate(0, ${currentY})`);
+
+			const yScaleSignal = d3.scaleLinear()
+				.domain(d3.extent(audio_signal))
+				.range([height, 0]);
+
+			const line = d3.line()
+					.x((_, i) => xScale(i / sample_rate))
+					.y(d => yScaleSignal(d));
+
+			const xScale = d3.scaleLinear().domain([0, total_duration]).range([0, width]);
+
+			signalGroup.append("path")
+					.datum(audio_signal)
+					.attr("fill", "none")
+					.attr("stroke", "gray")
+					.attr("stroke-width", 0.7)
+					.attr("opacity", 0.8)
+					.attr("d", line);
+		});
+
+
+
+</script>
+			<!-- var x = d3.scaleLinear() -->
+			<!-- 	.domain([ 0, audio_signal.length ]) -->
+			<!-- 	.range([ 0, width ]); -->
+
+			<!-- svg.append("g") -->
+			<!-- 	.attr("transform", "translate(0," + height + ")") -->
+			<!-- 	.call(d3.axisBottom(x)); -->
+
+			<!-- var y = d3.scaleLinear() -->
+			<!-- 	.domain([Math.min(audio_signal), Math.max(audio_signal)]) -->
+
+			<!-- svg.append("g") -->
+			<!-- 	.call(d3.axisLeft(y)); -->
+
+
+			<!-- // add the line -->
+			<!-- svg.append("path") -->
+			<!-- 	.datum(audio_signal) -->
+			<!-- 	.attr("d", d3.line() -->
+			<!-- 			.x(function(d) { return x(d.x) }) -->
+			<!-- 			.y(function(d) { return y(d.y) }) -->
+			<!-- 		) -->
