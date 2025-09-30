@@ -3,8 +3,8 @@
  * @param {object} config - The configuration object for the visualization.
  * @param {string} config.textContainerId - ID of the div for the text visualization.
  * @param {string} config.audioContainerId - ID of the div for the audio visualization (SVG).
- * @param {string[]} config.text_tokens - Array of token strings.
- * @param {number[]} config.text_shapley_values - Shapley values corresponding to each token.
+ * @param {string[]} config.question_tokens - Array of token strings.
+ * @param {number[]} config.question_shapley_values - Shapley values corresponding to each token.
  * @param {number[]} config.audio_signal - The raw audio waveform data.
  * @param {number[]} config.audio_shapley_values - Shapley values for the audio.
  * @param {number} config.sample_rate - The sample rate of the audio signal.
@@ -21,19 +21,41 @@ function createModalityVisualization(config) {
     const {
         textContainerId,
         audioContainerId,
-        text_tokens,
-        text_shapley_values,
+        question_tokens,
+        question_shapley_values,
         audio_signal,
         audio_shapley_values,
         sample_rate,
         total_duration,
         num_shapley_samples,
-        intensity_threshold,
         onTokenClick, // <-- NEW: Get the callback function
         gt_start,
         gt_end
     } = config;
 
+		// --- NEW CODE BLOCK TO HANDLE 2D ARRAY INPUTS ---
+		// By default, we use the inputs directly.
+    let final_text_shapley = question_shapley_values;
+    let final_audio_shapley = audio_shapley_values;
+
+    // Check if the text shapley values are a 2D array (a matrix).
+    if (Array.isArray(question_shapley_values[0])) {
+        console.log("2D text_shapley_values detected. Calculating column-wise mean.");
+        // Transpose the matrix so columns become rows.
+				console.log(question_shapley_values);
+        const transposedText = d3.transpose(question_shapley_values);
+        // Calculate the mean of each new row (which was an original column).
+        final_text_shapley = transposedText.map(d=> d3.sum(d));
+    }
+
+    // Check if the audio shapley values are a 2D array.
+    if (Array.isArray(audio_shapley_values[0])) {
+        console.log("2D audio_shapley_values detected. Calculating column-wise mean.");
+        const transposedAudio = d3.transpose(audio_shapley_values);
+        final_audio_shapley = transposedAudio.map(d => d3.sum(d));
+    }
+
+		console.log("final_audio_shapley", final_audio_shapley);
     // Clear previous visualizations
     d3.select(`#${textContainerId}`).html("");
     d3.select(`#${audioContainerId}`).html("");
@@ -45,6 +67,8 @@ function createModalityVisualization(config) {
     const totalHeight = 500;
     const width = totalWidth - margin.left - margin.right;
     const height = totalHeight - margin.top - margin.bottom;
+		// FIXME: this should be a user event
+		const intensity_threshold = 0.8
 
     const heightRatios = [2, 1.2, 1.2, 1.2];
     const totalRatio = d3.sum(heightRatios);
@@ -52,8 +76,8 @@ function createModalityVisualization(config) {
     const plotPads = 15;
 
     // --- 2. CREATE SCALES ---
-    const maxTextShapley = d3.max(text_shapley_values, d => Math.abs(d));
-    const maxAudioShapley = d3.max(audio_shapley_values, d => Math.abs(d));
+    const maxTextShapley = d3.max(final_text_shapley, d => Math.abs(d));
+    const maxAudioShapley = d3.max(final_audio_shapley, d => Math.abs(d));
     const max_abs_value = Math.max(maxTextShapley, maxAudioShapley);
 
     const colorScale = d3.scaleSequential(colormap).domain([0, max_abs_value * 1.1]);
@@ -61,12 +85,12 @@ function createModalityVisualization(config) {
 
     // --- 3. RENDER VISUALIZATIONS ---
     // Pass the onTokenClick callback to the text rendering function
-    renderTextViz(textContainerId, text_tokens, text_shapley_values, colorScale, maxTextShapley, intensity_threshold, onTokenClick);
+    renderTextViz(textContainerId, question_tokens, final_text_shapley, colorScale, maxTextShapley, intensity_threshold, onTokenClick);
 
     const svg = setupSvg(audioContainerId, totalWidth, totalHeight, margin);
 
     renderAudioViz(svg, {
-        audio_signal, audio_shapley_values, sample_rate, total_duration,
+        audio_signal, final_audio_shapley, sample_rate, total_duration,
         num_shapley_samples, gt_start, gt_end, xScale, colorScale,
         width, plotHeights, plotPads, max_abs_value
     });
@@ -145,7 +169,9 @@ function renderAudioViz(svg, config) {
 
     // Plot 1: Waveform
     const signalGroup = svg.append("g").attr("transform", `translate(0, ${currentY})`);
+	console.log(audio_signal);
     const yScaleSignal = d3.scaleLinear().domain(d3.extent(audio_signal)).range([plotHeights[0], 0]);
+
     const line = d3.line()
         .x((_, i) => xScale(i / sample_rate))
         .y(d => yScaleSignal(d));
