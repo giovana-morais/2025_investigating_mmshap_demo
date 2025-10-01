@@ -1,7 +1,7 @@
 /**
  * Main function to generate the modality contribution visualization.
  * @param {object} config - The configuration object for the visualization.
- * @param {string} config.textContainerId - ID of the div for the text visualization.
+ * @param {string} config.questionContainerId - ID of the div for the text visualization.
  * @param {string} config.audioContainerId - ID of the div for the audio visualization (SVG).
  * @param {string[]} config.question_tokens - Array of token strings.
  * @param {number[]} config.question_shapley_values - Shapley values corresponding to each token.
@@ -19,12 +19,14 @@ function createModalityVisualization(config) {
 
     // --- 1. DESTRUCTURE CONFIG and SETUP DIMENSIONS ---
     const {
-        textContainerId,
+        questionContainerId,
+				answerContainerId,
         audioContainerId,
         question_tokens,
         question_shapley_values,
         audio_signal,
         audio_shapley_values,
+				answer_tokens,
         sample_rate,
         total_duration,
         num_shapley_samples,
@@ -34,7 +36,8 @@ function createModalityVisualization(config) {
     } = config;
 
     // Clear previous visualizations
-    d3.select(`#${textContainerId}`).html("");
+    d3.select(`#${questionContainerId}`).html("");
+    d3.select(`#${answerContainerId}`).html("");
     d3.select(`#${audioContainerId}`).html("");
 
     const colormap = d3.interpolateViridis;
@@ -47,7 +50,8 @@ function createModalityVisualization(config) {
 		// FIXME: this should be a user event
 		const intensity_threshold = 0.8
 
-    const heightRatios = [2, 1.2, 1.2, 1.2];
+		// FIXME: adjust ratio to include answer tokens
+    const heightRatios = [2, 2, 1.2, 1.2, 1.2];
     const totalRatio = d3.sum(heightRatios);
     const plotHeights = heightRatios.map(r => (height / totalRatio) * r);
     const plotPads = 15;
@@ -62,7 +66,9 @@ function createModalityVisualization(config) {
 
     // --- 3. RENDER VISUALIZATIONS ---
     // Pass the onTokenClick callback to the text rendering function
-    renderTextViz(textContainerId, question_tokens, question_shapley_values, colorScale, maxTextShapley, intensity_threshold, onTokenClick);
+    renderQuestionViz(questionContainerId, question_tokens, question_shapley_values, colorScale, maxTextShapley, intensity_threshold);
+
+    renderAnswerViz(answerContainerId, answer_tokens, onTokenClick);
 
     const svg = setupSvg(audioContainerId, totalWidth, totalHeight, margin);
 
@@ -98,11 +104,14 @@ function setupSvg(containerId, totalWidth, totalHeight, margin) {
  * @param {d3.ScaleSequential} colorScale - The color scale for highlighting.
  * @param {number} maxShapley - The maximum absolute Shapley value for text.
  * @param {number} threshold - The intensity threshold for highlighting.
- * @param {function} [onTokenClick] - Optional click handler for tokens.
  */
-function renderTextViz(containerId, tokens, shapleyValues, colorScale, maxShapley, threshold, onTokenClick) {
+function renderQuestionViz(containerId, tokens, shapleyValues, colorScale, maxShapley, threshold) {
     const textContainer = d3.select(`#${containerId}`);
     const textThreshold = threshold * maxShapley;
+
+		console.log("renderQuestionViz");
+
+		textContainer.append("h2").text("Question:")
 
     tokens.forEach((token, i) => {
         const value = shapleyValues[i];
@@ -111,10 +120,10 @@ function renderTextViz(containerId, tokens, shapleyValues, colorScale, maxShaple
         const span = textContainer.append("span").text(token + " ");
 
         // NEW: Add interactivity if a click handler is provided
-        if (onTokenClick) {
-            span.style("cursor", "pointer")
-                .on("click", () => onTokenClick(token, i));
-        }
+        // if (onTokenClick) {
+        //     span.style("cursor", "pointer")
+        //         .on("click", () => onTokenClick(token, i));
+        // }
 
         if (absValue > textThreshold) {
             const color = colorScale(absValue);
@@ -128,7 +137,23 @@ function renderTextViz(containerId, tokens, shapleyValues, colorScale, maxShaple
     });
 }
 
-// ... the rest of the functions (renderAudioViz, renderColorbar) remain unchanged ...
+    // renderAnswerViz(answerContainerId, answer_tokens, onTokenClick);
+function renderAnswerViz(containerId, tokens, onTokenClick) {
+    const textContainer = d3.select(`#${containerId}`);
+
+		textContainer.append("h2").text("Model answer:")
+
+    tokens.forEach((token, i) => {
+        const span = textContainer.append("span").text(token + " ");
+
+        if (onTokenClick) {
+            span.style("cursor", "pointer")
+                .on("click", () => onTokenClick(token, i));
+        }
+        span.classed("token", true);
+    });
+}
+
 
 /**
  * Renders all audio-related plots (waveform and heatmaps) and axes.
