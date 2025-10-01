@@ -1,39 +1,40 @@
 body {
-		font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: center;
-		margin: 20px;
-		background-color: #f9f9f9;
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	margin: 20px;
+	background-color: #f9f9f9;
 }
 h2 {
-		font-weight: 500;
+	font-weight: 500;
 }
 .text-container {
-		width: 800px;
-		padding: 10px;
-		line-height: 2.2;
-		font-size: 16px;
-		font-family: "monospace";
-		margin-bottom: 20px;
+	width: 800px;
+	padding: 10px;
+	line-height: 2.2;
+	font-size: 16px;
+	font-family: "monospace";
+	margin-bottom: 20px;
 }
 .token {
-		padding: 4px 2px;
-		border-radius: 4px;
-		transition: all 0.2s ease-in-out;
+	padding: 4px 2px;
+	border-radius: 4px;
+	transition: all 0.2s ease-in-out;
+	/* transition: background-color 0.3s; /1* Smooth transition for highlighting *1/ */
 }
 .y-axis-label {
-		font-size: 12px;
-		text-anchor: end;
+	font-size: 12px;
+	text-anchor: end;
 }
 .plot-container {
-		margin-bottom: 50px;
-		border-top: 1px solid #ccc;
-		background-color: white;
-		padding-top: 20px;
-		border-radius: 8px;
-		box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+	margin-bottom: 50px;
+	border-top: 1px solid #ccc;
+	background-color: white;
+	padding-top: 20px;
+	border-radius: 8px;
+	box-shadow: 0 4px 12px rgba(0,0,0,0.08);
 }
 
 .column {
@@ -46,4 +47,30 @@ h2 {
 	content: "";
 	display: table;
 	clear: both;
+}
+
+.highlighted-token {
+	background-color: #FFD700; /* A gold/yellow highlight color */
+	border-radius: 3px;
+}
+
+
+.plot-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 10px;
+}
+
+.reset-button {
+	padding: 5px 10px;
+	font-size: 12px;
+	cursor: pointer;
+	border: 1px solid #ccc;
+	background-color: #f0f0f0;
+	border-radius: 4px;
+}
+
+.reset-button:hover {
+	background-color: #e0e0e0;
 }
