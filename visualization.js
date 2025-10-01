@@ -17,22 +17,22 @@
  */
 function createModalityVisualization(config) {
 
-    // --- 1. DESTRUCTURE CONFIG and SETUP DIMENSIONS ---
-    const {
+  const {
         questionContainerId,
-				answerContainerId,
+        answerContainerId,
         audioContainerId,
         question_tokens,
         question_shapley_values,
         audio_signal,
         audio_shapley_values,
-				answer_tokens,
+        answer_tokens,
         sample_rate,
         total_duration,
         num_shapley_samples,
-        onTokenClick, // <-- NEW: Get the callback function
+        onTokenClick,
         gt_start,
-        gt_end
+        gt_end,
+        highlightedTokenIndex // <-- NEW: Get the index to highlight
     } = config;
 
     // Clear previous visualizations
@@ -68,7 +68,7 @@ function createModalityVisualization(config) {
     // Pass the onTokenClick callback to the text rendering function
     renderQuestionViz(questionContainerId, question_tokens, question_shapley_values, colorScale, maxTextShapley, intensity_threshold);
 
-    renderAnswerViz(answerContainerId, answer_tokens, onTokenClick);
+    renderAnswerViz(answerContainerId, answer_tokens, onTokenClick, highlightedTokenIndex);
 
     const svg = setupSvg(audioContainerId, totalWidth, totalHeight, margin);
 
@@ -137,21 +137,24 @@ function renderQuestionViz(containerId, tokens, shapleyValues, colorScale, maxSh
     });
 }
 
-    // renderAnswerViz(answerContainerId, answer_tokens, onTokenClick);
-function renderAnswerViz(containerId, tokens, onTokenClick) {
-    const textContainer = d3.select(`#${containerId}`);
+// renderAnswerViz(answerContainerId, answer_tokens, onTokenClick);
+function renderAnswerViz(containerId, tokens, onTokenClick, highlightedIndex) {
+	const textContainer = d3.select(`#${containerId}`);
 
-		textContainer.append("h2").text("Model answer:")
+	textContainer.append("h2").text("Model answer:")
 
-    tokens.forEach((token, i) => {
-        const span = textContainer.append("span").text(token + " ");
+	tokens.forEach((token, i) => {
+		const span = textContainer.append("span").text(token + " ");
 
-        if (onTokenClick) {
-            span.style("cursor", "pointer")
-                .on("click", () => onTokenClick(token, i));
-        }
-        span.classed("token", true);
-    });
+		if (onTokenClick) {
+			span.style("cursor", "pointer")
+				.on("click", () => onTokenClick(token, i));
+		}
+		if (i === highlightedIndex) {
+			span.classed("highlighted-token", true);
+		}
+		span.classed("token", true);
+	});
 }
 
 
@@ -161,11 +164,11 @@ function renderAnswerViz(containerId, tokens, onTokenClick) {
  * @param {object} config - Configuration object for audio plots.
  */
 function renderAudioViz(svg, config) {
-    const {
-        audio_signal, audio_shapley_values, sample_rate, total_duration,
-        num_shapley_samples, gt_start, gt_end, xScale, colorScale,
-        width, plotHeights, plotPads, max_abs_value
-    } = config;
+	const {
+		audio_signal, audio_shapley_values, sample_rate, total_duration,
+		num_shapley_samples, gt_start, gt_end, xScale, colorScale,
+		width, plotHeights, plotPads, max_abs_value
+	} = config;
 
 		console.log("audio_shapley_values", audio_shapley_values);
     let currentY = 0;

@@ -52,8 +52,6 @@ async function initPage() {
                 const handleTokenClick = (answer_token, i) => {
                     if (!original_question_shapley || !original_audio_shapley) return;
 
-										console.log("test", original_question_shapley[i].length);
-
                     const perTokenConfig = {
                         ...data,
                         questionContainerId,
