@@ -37,8 +37,8 @@ function createModalityVisualization(config) {
 		gt_end,
 		highlightedTokenIndex,
 		initialPlayheadTime,
-		totalWidth = 1000,
-		totalHeight = 500
+		totalWidth,
+		totalHeight
 	} = config;
 
 	// Clear previous visualizations
@@ -50,6 +50,8 @@ function createModalityVisualization(config) {
 
 	const margin = { top: 10, right: 80, bottom: 40, left: 80 };
 	const width = totalWidth - margin.left - margin.right;
+
+	console.log(`totalWidth: ${totalWidth}, width: ${width}`);
 	const height = totalHeight - margin.top - margin.bottom;
 	// FIXME: this should be a user event
 	const intensity_threshold = 0.8
@@ -130,10 +132,7 @@ function renderQuestionViz(containerId, tokens, shapleyValues, colorScale, maxSh
 	const textContainer = d3.select(`#${containerId}`);
 	const textThreshold = threshold * maxShapley;
 
-	console.log("renderQuestionViz");
-
 	textContainer.append("h2").text("Question:")
-
 	tokens.forEach((token, i) => {
 		const value = shapleyValues[i];
 		const absValue = Math.abs(value);
@@ -157,7 +156,6 @@ function renderAnswerViz(containerId, tokens, onTokenClick, highlightedIndex) {
 	const textContainer = d3.select(`#${containerId}`);
 
 	textContainer.append("h2").text("Model answer:")
-
 	tokens.forEach((token, i) => {
 		const span = textContainer.append("span").text(token + " ");
 
@@ -187,6 +185,8 @@ function renderAudioViz(svg, config) {
 
 	console.log("audio_shapley_values", audio_shapley_values);
 	let currentY = 0;
+
+	console.log("audioWidth", width);
 
 	// Plot 1: Waveform
 	const signalGroup = svg.append("g").attr("transform", `translate(0, ${currentY})`);
@@ -231,7 +231,6 @@ function renderAudioViz(svg, config) {
 		.attr("y2", plotHeights[0]) // Make it the full height of the waveform plot
 		.attr("stroke", "red")
 		.attr("stroke-width", 1.5)
-		.style("visibility", "hidden") // Initially hidden
 		.attr("transform", "translate(0, 0)"); // Start at time 0
 
 	// Immediately position the playhead on initial render if time is provided.
