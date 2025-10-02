@@ -44,7 +44,7 @@ function createModalityVisualization(config) {
 	d3.select(`#${answerContainerId}`).html("");
 	d3.select(`#${audioContainerId}`).html("");
 
-	const colormap = d3.interpolateViridis;
+	const colormap = d3.interpolateGreys;
 
 	const margin = { top: 10, right: 80, bottom: 40, left: 80 };
 	const totalWidth = 800;
@@ -204,6 +204,26 @@ function renderAudioViz(svg, config) {
 		.attr("opacity", 0.8)
 		.attr("d", line);
 
+	// transparent rectangle that will capture click events on the waveform
+	signalGroup.append("rect")
+        .attr("width", width)
+        .attr("height", plotHeights[0])
+        .style("fill", "transparent")
+        .style("cursor", "pointer")
+        .on("click", (event) => {
+            // Get the x-coordinate of the click relative to the signalGroup
+            const xPos = d3.pointer(event, signalGroup.node())[0];
+
+            // Use the inverse of the xScale to convert the pixel position back to a time value
+            const clickedTime = xScale.invert(xPos);
+
+            // Get the global audio player and update its currentTime
+            const audioPlayer = document.getElementById('audio-player');
+            if (audioPlayer) {
+                audioPlayer.currentTime = clickedTime;
+            }
+        });
+
 	const playhead = signalGroup.append("line")
 		.attr("id", playheadId)
 		.attr("class", "playhead")
@@ -281,7 +301,7 @@ function renderAudioViz(svg, config) {
 		.text("Time (seconds)")
 		.style("font-size", "14px");
 
-	renderColorbar(svg, { width, plotHeights, plotPads, max_abs_value, colormap: d3.interpolateViridis });
+	renderColorbar(svg, { width, plotHeights, plotPads, max_abs_value, colormap: d3.interpolateGreys });
 }
 
 /**
