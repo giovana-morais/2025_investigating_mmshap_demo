@@ -1,9 +1,9 @@
 const paramsStr = window.location.search;
 const searchParams = new URLSearchParams(paramsStr);
 const qid = searchParams.get("qid");
-document.getElementById("qid").innerHTML = qid;
+document.getElementById("qid").innerHTML = `track id should come here instead of qid = ${qid}`;
 
-// load audio for the sample
+// load audio for the sample based on the qid provided
 document.getElementById("audio-player").innerHTML = `<source src="data/audio/${qid}.wav" type="audio/wav">`;
 
 // --- Main function to initialize the demo page ---
@@ -18,6 +18,11 @@ async function initPage() {
 		for (const exp of exps) {
 			const mainContainer = document.getElementById(`${model}-${exp}-container`);
 			const dataFile = `data/${qid}_${model}_${exp}.json`;
+
+			const vizWidth = 1000;
+			const vizHeight = 500;
+
+			console.log("vizDims:", vizWidth, vizHeight);
 
 			const plotId = `${model}-${exp}-plot`;
 			const questionContainerId = `${plotId}-question`;
@@ -66,7 +71,9 @@ async function initPage() {
 						question_shapley_values: d3.transpose(original_question_shapley)[i],
 						audio_shapley_values: d3.transpose(original_audio_shapley)[i],
 						highlightedTokenIndex: i,
-						initialPlayheadTime: currentTime
+						initialPlayheadTime: currentTime,
+						totalWidth: vizWidth,
+						totalHeight: vizHeight
 					};
 					createModalityVisualization(perTokenConfig);
 				};
@@ -86,6 +93,8 @@ async function initPage() {
 						// Ensure no token is highlighted
 						highlightedTokenIndex: null,
 						initialPlayheadTime: currentTime,
+						totalWidth: vizWidth,
+						totalHeight: vizHeight
 					};
 					createModalityVisualization(defaultConfig);
 				};
@@ -102,7 +111,9 @@ async function initPage() {
 					audioContainerId,
 					onTokenClick: handleTokenClick,
 					question_shapley_values: aggregated_question_shapley,
-					audio_shapley_values: aggregated_audio_shapley
+					audio_shapley_values: aggregated_audio_shapley,
+					totalWidth: vizWidth,
+					totalHeight: vizHeight
 				};
 
 				// Create the initial visualization
@@ -116,7 +127,6 @@ async function initPage() {
 	}
 }
 
-// Start the page initialization process
 initPage();
 
 const audioPlayer = document.getElementById('audio-player');
@@ -128,21 +138,20 @@ audioPlayer.addEventListener('timeupdate', () => {
 	// If our global array of update functions exists, loop through and call each one
 	if (window.updatePlayheads && window.updatePlayheads.length > 0) {
 		window.updatePlayheads.forEach(updateFunc => {
-			// Pass the current time to each chart's specific update function
 			updateFunc(currentTime);
 		});
 	}
 });
 
-// Make sure the playhead hides when the audio is paused or ends
-// audioPlayer.addEventListener('pause', hideAllPlayheads);
+// Make sure the playhead hides when the audio ends
 audioPlayer.addEventListener('ended', hideAllPlayheads);
 
 function hideAllPlayheads() {
 	if (window.updatePlayheads && window.updatePlayheads.length > 0) {
-		// We can just call the update functions with a time outside the range
+		// We can just call the update functions with a time outside the range and
+		// then it disappears
 		window.updatePlayheads.forEach(updateFunc => {
-			updateFunc(-1); // A negative time will cause it to be hidden
+			updateFunc(-1);
 		});
 	}
 }

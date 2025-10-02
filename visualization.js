@@ -36,7 +36,9 @@ function createModalityVisualization(config) {
 		gt_start,
 		gt_end,
 		highlightedTokenIndex,
-		initialPlayheadTime
+		initialPlayheadTime,
+		totalWidth = 1000,
+		totalHeight = 500
 	} = config;
 
 	// Clear previous visualizations
@@ -47,8 +49,6 @@ function createModalityVisualization(config) {
 	const colormap = d3.interpolateGreys;
 
 	const margin = { top: 10, right: 80, bottom: 40, left: 80 };
-	const totalWidth = 800;
-	const totalHeight = 400;
 	const width = totalWidth - margin.left - margin.right;
 	const height = totalHeight - margin.top - margin.bottom;
 	// FIXME: this should be a user event
