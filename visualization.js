@@ -183,10 +183,8 @@ function renderAudioViz(svg, config) {
 		width, plotHeights, plotPads, max_abs_value, playheadId, initialPlayheadTime
 	} = config;
 
-	console.log("audio_shapley_values", audio_shapley_values);
 	let currentY = 0;
-
-	console.log("audioWidth", width);
+	console.log("renderAudioViz width", width);
 
 	// Plot 1: Waveform
 	const signalGroup = svg.append("g").attr("transform", `translate(0, ${currentY})`);
@@ -246,7 +244,7 @@ function renderAudioViz(svg, config) {
 	}
 
 	currentY += plotHeights[0] + plotPads;
-	if (gt_start !== undefined && gt_end !== undefined) {
+	if (gt_start !== null && gt_end !== null) {
 		signalGroup.append("rect")
 			.attr("x", xScale(gt_start))
 			.attr("width", xScale(gt_end) - xScale(gt_start))
