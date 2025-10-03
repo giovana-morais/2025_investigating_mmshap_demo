@@ -1,10 +1,24 @@
 const paramsStr = window.location.search;
 const searchParams = new URLSearchParams(paramsStr);
 const qid = searchParams.get("qid");
-document.getElementById("qid").innerHTML = `track id should come here instead of qid = ${qid}`;
 
 // load audio for the sample based on the qid provided
 document.getElementById("audio-player").innerHTML = `<source src="data/audio/${qid}.wav" type="audio/wav">`;
+
+// ugly hack to calculate the first grid plot size before adding it to DOM
+// based on here: https://stackoverflow.com/questions/2921428/dom-element-width-before-appended-to-dom
+function measure(el, mainContainer) {
+	    el.style.visibility = 'hidden';
+	    el.style.position = 'absolute';
+
+	    mainContainer.appendChild(el);
+	    var result = el.clientWidth;
+	    mainContainer.removeChild(el);
+
+			console.log("result", result);
+
+	    return result;
+}
 
 // --- Main function to initialize the demo page ---
 async function initPage() {
@@ -29,11 +43,14 @@ async function initPage() {
 
 			const plotContainer = document.createElement('div');
 
+			const experimentModel = model == "qwen" ? "Qwen-Audio" : "MU-LLaMA";
+			const experimentName = exp == "fs" ? "MC-PI" : "MC-NPI";
+
 			plotContainer.className = 'plot-container';
 			plotContainer.id = `${plotId}-wrapper`;
 			plotContainer.innerHTML = `
+					<h3 style="text-align:center;">${experimentModel} ${experimentName}</h3>
 				<div class="plot-header">
-					<h3>${model}_${exp}</h3>
 					<button id="${plotId}-reset-button" class="reset-button">Reset View</button>
 				</div>
 				<div id="${plotId}-question" class="question-container"></div>
@@ -41,18 +58,25 @@ async function initPage() {
 				<div id="${plotId}-audio"></div>
 			`;
 			mainContainer.appendChild(plotContainer);
-
+			console.log("plotContainer (before try)", plotContainer.clientWidth);
 
 			try {
-				const vizWidth = 500;
+				// ok listen to me: i don't know why this works. i've searched the
+				// entire internet. somehow, this is working so i'll just say amen and
+				// move on. a *prime* example of a gambiarra.
+				const measurement = measure(plotContainer.cloneNode(true), mainContainer) - 100;
+				const vizWidth = measurement / 2;
 				const vizHeight = 300;
 				console.log("vizWidth", vizWidth);
+				console.log("plotContainer", plotContainer);
 				console.log("plotContainer.clientWidth", plotContainer.clientWidth);
+				console.log("plotContainer.offsetWidth", plotContainer.offsetWidth);
 
 				const data = await d3.json(dataFile);
 
-				// store original 2d matrices so we can go back and forth between viz
-				// types
+				document.getElementById("qid").innerHTML = `track_id = ${data.title}, qid = ${qid}`;
+
+				// store original matrices so we can go back and forth between viz types
 				const original_question_shapley = Array.isArray(data.question_shapley_values[0]) ? data.question_shapley_values : null;
 				const original_audio_shapley = Array.isArray(data.audio_shapley_values[0]) ? data.audio_shapley_values : null;
 
@@ -128,15 +152,12 @@ async function initPage() {
 			}
 		}
 	}
-	// }, 0);
 }
 
 initPage();
-// Your JavaScript code here
-const audioPlayer = document.getElementById('audio-player');
 
+const audioPlayer = document.getElementById('audio-player');
 audioPlayer.addEventListener('timeupdate', () => {
-	// Get the current time from the player
 	const currentTime = audioPlayer.currentTime;
 
 	// If our global array of update functions exists, loop through and call each one
