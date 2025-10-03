@@ -50,9 +50,8 @@ function createModalityVisualization(config) {
 
 	const margin = { top: 10, right: 80, bottom: 40, left: 80 };
 	const width = totalWidth - margin.left - margin.right;
-
-	console.log(`totalWidth: ${totalWidth}, width: ${width}`);
 	const height = totalHeight - margin.top - margin.bottom;
+
 	// FIXME: this should be a user event
 	const intensity_threshold = 0.8
 

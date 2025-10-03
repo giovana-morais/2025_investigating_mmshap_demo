@@ -84,3 +84,14 @@ h2 {
 .qid {
 	font-family: "monospace";
 }
+
+@media (max-width: 768px) {
+	#grid-container {
+		/* Switch to a single column on smaller screens */
+		grid-template-columns: 1fr;
+	}
+
+	h2 {
+		text-align: center;
+	}
+}
