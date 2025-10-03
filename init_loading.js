@@ -71,6 +71,12 @@ async function drawAllVisualizations() {
 					<p id="${plotId}-current-view">Current viewing aggregate values</p>
 					<button id="${plotId}-reset-button" class="reset-button">Reset View</button>
 				</div>
+				<div class="plot-header">
+					<p>Audio stats:</p>
+					<p id="${plotId}-audio-stats"></p>
+					<p>Question stats:</p>
+					<p id="${plotId}-question-stats"></p>
+				</div>
 				<div id="${plotId}-question" class="question-container"></div>
 				<div id="${plotId}-answer" class="answer-container"></div>
 				<div id="${plotId}-audio"></div>
@@ -98,7 +104,11 @@ async function drawAllVisualizations() {
 
 					const currentTime = document.getElementById('audio-player').currentTime;
 
+					// plot-header info
 					document.getElementById(`${plotId}-current-view`).innerHTML = `Current viewing results for t = ${answer_token}`
+					const {maxAudio, minAudio, medianAudio, maxText, minText, medianText} = getStats(d3.transpose(original_audio_shapley)[i], d3.transpose(original_question_shapley)[i]);
+					document.getElementById(`${plotId}-audio-stats`).innerHTML = `max: ${maxAudio}, min: ${minAudio}, median: ${medianAudio}`
+					document.getElementById(`${plotId}-question-stats`).innerHTML = `max: ${maxText}, min: ${minText}, median: ${medianText}`
 
 					const perTokenConfig = {
 						...data, questionContainerId, answerContainerId, audioContainerId,
@@ -114,7 +124,11 @@ async function drawAllVisualizations() {
 
 				const handleResetClick = () => {
 					console.log(`Resetting view for ${model}-${exp}`);
+					// plot-header info
 					document.getElementById(`${plotId}-current-view`).innerHTML = "Current viewing aggregate values"
+					const {maxAudio, minAudio, medianAudio, maxText, minText, medianText} = getStats(aggregated_audio_shapley, aggregated_question_shapley);
+					document.getElementById(`${plotId}-audio-stats`).innerHTML = `max: ${maxAudio}, min: ${minAudio}, median: ${medianAudio}`
+					document.getElementById(`${plotId}-question-stats`).innerHTML = `max: ${maxText}, min: ${minText}, median: ${medianText}`
 
 					const currentTime = document.getElementById('audio-player').currentTime;
 					const defaultConfig = {
@@ -129,7 +143,11 @@ async function drawAllVisualizations() {
 					createModalityVisualization(defaultConfig);
 				};
 
+				// the repetition of this block is bothering me, but i won't fix it now.
 				document.getElementById(`${plotId}-reset-button`).addEventListener('click', handleResetClick);
+				const {maxAudio, minAudio, medianAudio, maxText, minText, medianText} = getStats(aggregated_audio_shapley, aggregated_question_shapley);
+					document.getElementById(`${plotId}-audio-stats`).innerHTML = `max: ${maxAudio}, min: ${minAudio}, median: ${medianAudio}`
+					document.getElementById(`${plotId}-question-stats`).innerHTML = `max: ${maxText}, min: ${minText}, median: ${medianText}`
 
 				const vizConfig = {
 					...data, questionContainerId, answerContainerId, audioContainerId,
@@ -148,6 +166,21 @@ async function drawAllVisualizations() {
 		}
 	}
 }
+
+function getStats(audioValues, textValues) {
+	console.log("getStats");
+
+	const f = d3.format(".2f")
+
+	const maxAudio = f(d3.max(audioValues));
+	const maxText = f(d3.max(textValues));
+	const minAudio = f(d3.min(audioValues));
+	const minText = f(d3.min(textValues));
+	const medianAudio = f(d3.median(audioValues));
+	const medianText = f(d3.median(textValues));
+
+	return {maxAudio: maxAudio, minAudio: minAudio, medianAudio: medianAudio, maxText: maxText, minText: minText, medianText: medianText};
+};
 
 // --- Initial page setup and event listeners ---
 function initPage() {
