@@ -10,14 +10,14 @@ body {
 h2 {
 	font-weight: 500;
 }
-.text-container {
-	width: 800px;
-	padding: 10px;
-	line-height: 2.2;
-	font-size: 16px;
-	font-family: "monospace";
-	margin-bottom: 20px;
-}
+/* .text-container { */
+/* 	width: 100%; */
+/* 	padding: 10px; */
+/* 	line-height: 2.2; */
+/* 	font-size: 16px; */
+/* 	font-family: "monospace"; */
+/* 	margin-bottom: 20px; */
+/* } */
 .token {
 	padding: 4px 2px;
 	border-radius: 4px;
@@ -69,6 +69,8 @@ h2 {
 }
 .question-container, .answer-container {
 	word-wrap: break-word;
+	font-size: 16px;
+	font-family: "monospace";
 }
 
 /* create our 2x2 grid */

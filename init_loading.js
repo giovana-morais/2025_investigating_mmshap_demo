@@ -21,6 +21,12 @@ async function initPage() {
 
 			const mainContainer = document.getElementById(`${model}-${exp}-container`);
 			const plotId = `${model}-${exp}-plot`;
+			const dataFile = `data/${qid}_${model}_${exp}.json`;
+
+			const questionContainerId = `${plotId}-question`;
+			const answerContainerId = `${plotId}-answer`;
+			const audioContainerId = `${plotId}-audio`;
+
 			const plotContainer = document.createElement('div');
 
 			plotContainer.className = 'plot-container';
@@ -34,117 +40,99 @@ async function initPage() {
 				<div id="${plotId}-answer" class="answer-container"></div>
 				<div id="${plotId}-audio"></div>
 			`;
-				// <div id="${questionContainerId}" class="question-container"></div>
-				// <div id="${answerContainerId}" class="answer-container"></div>
-				// <div id="${audioContainerId}"></div>
 			mainContainer.appendChild(plotContainer);
-		}
-	}
 
-	// setTimeout(async () => {
-	// then we  render our plots to avoid weird race conditions
-	for (const model of models) {
-		for (const exp of exps) {
 
-				const dataFile = `data/${qid}_${model}_${exp}.json`;
-				const mainContainer = document.getElementById(`${model}-${exp}-container`);
-				const plotId = `${model}-${exp}-plot`;
-				const plotContainer = document.getElementById(`${plotId}-wrapper`);
+			try {
+				const vizWidth = 500;
+				const vizHeight = 300;
+				console.log("vizWidth", vizWidth);
+				console.log("plotContainer.clientWidth", plotContainer.clientWidth);
 
-				const questionContainerId = `${plotId}-question`;
-				const answerContainerId = `${plotId}-answer`;
-				const audioContainerId = `${plotId}-audio`;
+				const data = await d3.json(dataFile);
 
-				try {
-					const vizWidth = plotContainer.clientWidth - 30;
-					const vizHeight = 300;
-					console.log("vizWidth", vizWidth);
-					console.log("plotContainer.clientWidth", plotContainer.clientWidth);
+				// store original 2d matrices so we can go back and forth between viz
+				// types
+				const original_question_shapley = Array.isArray(data.question_shapley_values[0]) ? data.question_shapley_values : null;
+				const original_audio_shapley = Array.isArray(data.audio_shapley_values[0]) ? data.audio_shapley_values : null;
 
-					const data = await d3.json(dataFile);
+				// store the aggregated (default) data
+				const aggregated_question_shapley = original_question_shapley ? original_question_shapley.map(d => d3.sum(d)) : data.question_shapley_values;
+				const aggregated_audio_shapley = original_audio_shapley ? original_audio_shapley.map(d => d3.sum(d)) : data.audio_shapley_values;
 
-					// store original 2d matrices so we can go back and forth between viz
-					// types
-					const original_question_shapley = Array.isArray(data.question_shapley_values[0]) ? data.question_shapley_values : null;
-					const original_audio_shapley = Array.isArray(data.audio_shapley_values[0]) ? data.audio_shapley_values : null;
+				// --- Define the click handler for individual tokens ---
+				const handleTokenClick = (answer_token, i) => {
+					if (!original_question_shapley || !original_audio_shapley) return;
 
-					// store the aggregated (default) data
-					const aggregated_question_shapley = original_question_shapley ? original_question_shapley.map(d => d3.sum(d)) : data.question_shapley_values;
-					const aggregated_audio_shapley = original_audio_shapley ? original_audio_shapley.map(d => d3.sum(d)) : data.audio_shapley_values;
+					const currentTime = document.getElementById('audio-player').currentTime;
 
-					// --- Define the click handler for individual tokens ---
-					const handleTokenClick = (answer_token, i) => {
-						if (!original_question_shapley || !original_audio_shapley) return;
-
-						const currentTime = document.getElementById('audio-player').currentTime;
-
-						const perTokenConfig = {
-							...data,
-							questionContainerId,
-							answerContainerId,
-							audioContainerId,
-							onTokenClick: handleTokenClick,
-							question_shapley_values: d3.transpose(original_question_shapley)[i],
-							audio_shapley_values: d3.transpose(original_audio_shapley)[i],
-							highlightedTokenIndex: i,
-							initialPlayheadTime: currentTime,
-							totalWidth: vizWidth,
-							totalHeight: vizHeight
-						};
-						createModalityVisualization(perTokenConfig);
-					};
-
-					const handleResetClick = () => {
-						console.log(`Resetting view for ${model}-${exp}`);
-						const currentTime = document.getElementById('audio-player').currentTime;
-						const defaultConfig = {
-							...data,
-							questionContainerId,
-							answerContainerId,
-							audioContainerId,
-							onTokenClick: handleTokenClick,
-							// Use the stored aggregated values
-							question_shapley_values: aggregated_question_shapley,
-							audio_shapley_values: aggregated_audio_shapley,
-							// Ensure no token is highlighted
-							highlightedTokenIndex: null,
-							initialPlayheadTime: currentTime,
-							totalWidth: vizWidth,
-							totalHeight: vizHeight
-						};
-						createModalityVisualization(defaultConfig);
-					};
-
-					// --- Attach the event listener to the reset button ---
-					document.getElementById(`${plotId}-reset-button`).addEventListener('click', handleResetClick);
-
-					// Prepare the configuration object for the initial plot
-					const vizConfig = {
+					const perTokenConfig = {
 						...data,
 						questionContainerId,
 						answerContainerId,
 						audioContainerId,
 						onTokenClick: handleTokenClick,
-						question_shapley_values: aggregated_question_shapley,
-						audio_shapley_values: aggregated_audio_shapley,
+						question_shapley_values: d3.transpose(original_question_shapley)[i],
+						audio_shapley_values: d3.transpose(original_audio_shapley)[i],
+						highlightedTokenIndex: i,
+						initialPlayheadTime: currentTime,
 						totalWidth: vizWidth,
 						totalHeight: vizHeight
 					};
+					createModalityVisualization(perTokenConfig);
+				};
 
-					// Create the initial visualization
-					createModalityVisualization(vizConfig);
+				const handleResetClick = () => {
+					console.log(`Resetting view for ${model}-${exp}`);
+					const currentTime = document.getElementById('audio-player').currentTime;
+					const defaultConfig = {
+						...data,
+						questionContainerId,
+						answerContainerId,
+						audioContainerId,
+						onTokenClick: handleTokenClick,
+						// Use the stored aggregated values
+						question_shapley_values: aggregated_question_shapley,
+						audio_shapley_values: aggregated_audio_shapley,
+						// Ensure no token is highlighted
+						highlightedTokenIndex: null,
+						initialPlayheadTime: currentTime,
+						totalWidth: vizWidth,
+						totalHeight: vizHeight
+					};
+					createModalityVisualization(defaultConfig);
+				};
 
-				} catch (error) {
-					console.error(`Failed to load data file: ${dataFile}`, error);
-					mainContainer.innerHTML = `<p style="color: red;">Error: Could not load data for ${model}-${exp}.</p>`;
-				}
+				// --- Attach the event listener to the reset button ---
+				document.getElementById(`${plotId}-reset-button`).addEventListener('click', handleResetClick);
+
+				// Prepare the configuration object for the initial plot
+				const vizConfig = {
+					...data,
+					questionContainerId,
+					answerContainerId,
+					audioContainerId,
+					onTokenClick: handleTokenClick,
+					question_shapley_values: aggregated_question_shapley,
+					audio_shapley_values: aggregated_audio_shapley,
+					totalWidth: vizWidth,
+					totalHeight: vizHeight
+				};
+
+				// Create the initial visualization
+				createModalityVisualization(vizConfig);
+
+			} catch (error) {
+				console.error(`Failed to load data file: ${dataFile}`, error);
+				mainContainer.innerHTML = `<p style="color: red;">Error: Could not load data for ${model}-${exp}.</p>`;
+			}
 		}
 	}
 	// }, 0);
 }
 
 initPage();
-	    // Your JavaScript code here
+// Your JavaScript code here
 const audioPlayer = document.getElementById('audio-player');
 
 audioPlayer.addEventListener('timeupdate', () => {
