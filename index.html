@@ -8,39 +8,84 @@
 	</head>
 
 	<body>
-		<h2>Investigating Modality Contribution in Audio LLMs for Music</h2>
+		<h1>Investigating Modality Contribution in Audio LLMs for Music</h1>
 		<div class="row">
 			<div class="column">Giovana Morais</div>
 			<div class="column">Magdalena Fuentes</div>
 		</div>
 		<ul>
 			<li><a href="https://arxiv.org/pdf/2509.20641">Paper</a></li>
-			<li><a
-							href="https://github.com/giovana-morais/2025_investigating_mmshap">Code</a></li>
+			<li><a href="https://github.com/giovana-morais/2025_investigating_mmshap">Code</a></li>
 		</ul>
 
-		<h3>Abstract</h3>
-		<p>blablabla</p>
+		<h2>Motivation</h2>
 
-		<h3>Examples</h3>
-		<h4>Single-sounding events</h4>
-		This list of examples are xyz.
+		In this work, we investigate how Audio LLMs are using the audio
+		information when answering questions. For this, we first calculate Shapley
+		values for our audio and text features and use them to measure how each
+		modality contributed to a given output.<br>
+		That sounded like a lot, right? Don't worry. Let's break it down.<br>
+		We are investigating Audio LLMs. These models are LLMs that also process
+		audio data. So their input is an audio file (.wav, .mp3 etc) + a prompt. In
+		theory, the prompt could be anything, in the case of our study it is
+		specifically a multiple-choice question. For example<br>
 
+		<blockquote>
+			What is the genre of this song?<br>
+			A) Blues<br>
+			B) Rock<br>
+			C) Tecnho<br>
+			D) Samba<br>
+		</blockquote>
+
+		<h2>Examples</h2>
+		We divide our examples in two categories: the ones in which the answer is a
+		single-sounding event (which we inspected and annotated the ground truth)
+		and randomly selected examples. For the random examples, we do not have the
+		ground truth annotations as the answer usually required long-term
+		understanding of the audio. As discussed in our paper, how to annotate those
+		examples remains an open question.
+
+		<h3>How to interpret the plots</h3>
+		Once you click on the songs below, this is what you'll face
+
+		<br>
+		<br>
+		<b>placeholder of the toy example</b>
+		<br>
+		<br>
+
+		so this section briefly describes how we interpret the results in the paper
+		and what each of the plot components mean.
+
+		First, you have the "Question". This is the prompt that the model see.
+		Then, you have the "Answer", which is the answer the model provide.
+		Now we move to the audio section. This section has 4 parts: the waveform,
+		the absolute Shapley values, positive only values and negative only values.
+
+		<h3>Single-sounding events</h3>
+		Those are events that the answer is very well localized in the sound. We
+		refer again to our paper in case you want to see the methodology in details.
+
+		<br>
 		<a href="comparison.html?qid=719">Example 1 - QID 719</a>
+		<br>
 		<audio controls class="player">
 			<source src="data/audio/719.wav" type="audio/wav">
 		</audio>
 
+		<br>
 		<a href="comparison.html?qid=427">Example 2 - QID 427</a>
+		<br>
 		<audio controls class="player">
 			<source src="data/audio/719.wav" type="audio/wav">
 		</audio>
 
 
-		<h4>Random Examples</h4>
-		Random examples.
+		<h3>Random Examples</h3>
+		Random examples. Those were chosen at... random.
 
-		<h3>Citation</h3>
+		<h2>Citation</h2>
 		<code id="citation">
 			@misc{morais2025investigatingmodalitycontributionaudio,
 				title={Investigating Modality Contribution in Audio LLMs for Music},
@@ -52,5 +97,11 @@
 				url={https://arxiv.org/abs/2509.20641},
 			}
 		</code>
+
+		<h2>Disclaimer</h2>
+		<p>The visualizations were developed in D3.js with the support of
+		Gemini. I (Giovana) reviewed the code and tested it entirely, so any
+		possible problems or inconsistencies are my responsability. Let me know by
+		sending an email to giovana.morais@nyu.edu. Thank you!</p>
 </body>
 </html>
