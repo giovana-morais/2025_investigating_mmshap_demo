@@ -36,7 +36,9 @@ function createModalityVisualization(config) {
 		gt_start,
 		gt_end,
 		highlightedTokenIndex,
-		initialPlayheadTime
+		initialPlayheadTime,
+		totalWidth,
+		totalHeight
 	} = config;
 
 	// Clear previous visualizations
@@ -47,10 +49,9 @@ function createModalityVisualization(config) {
 	const colormap = d3.interpolateGreys;
 
 	const margin = { top: 10, right: 80, bottom: 40, left: 80 };
-	const totalWidth = 800;
-	const totalHeight = 400;
 	const width = totalWidth - margin.left - margin.right;
 	const height = totalHeight - margin.top - margin.bottom;
+
 	// FIXME: this should be a user event
 	const intensity_threshold = 0.8
 
@@ -82,7 +83,7 @@ function createModalityVisualization(config) {
 	window.updatePlayheads.push(updateThisPlayhead);
 
 	// --- 3. RENDER VISUALIZATIONS ---
-	renderQuestionViz(questionContainerId, question_tokens, question_shapley_values, colorScale, maxTextShapley, intensity_threshold);
+	renderQuestionViz(questionContainerId, question_tokens, question_shapley_values, colorScale, max_abs_value, intensity_threshold);
 	renderAnswerViz(answerContainerId, answer_tokens, onTokenClick, highlightedTokenIndex);
 
 	const svg = setupSvg(audioContainerId, totalWidth, totalHeight, margin);
@@ -130,10 +131,7 @@ function renderQuestionViz(containerId, tokens, shapleyValues, colorScale, maxSh
 	const textContainer = d3.select(`#${containerId}`);
 	const textThreshold = threshold * maxShapley;
 
-	console.log("renderQuestionViz");
-
 	textContainer.append("h2").text("Question:")
-
 	tokens.forEach((token, i) => {
 		const value = shapleyValues[i];
 		const absValue = Math.abs(value);
@@ -157,7 +155,6 @@ function renderAnswerViz(containerId, tokens, onTokenClick, highlightedIndex) {
 	const textContainer = d3.select(`#${containerId}`);
 
 	textContainer.append("h2").text("Model answer:")
-
 	tokens.forEach((token, i) => {
 		const span = textContainer.append("span").text(token + " ");
 
@@ -185,8 +182,8 @@ function renderAudioViz(svg, config) {
 		width, plotHeights, plotPads, max_abs_value, playheadId, initialPlayheadTime
 	} = config;
 
-	console.log("audio_shapley_values", audio_shapley_values);
 	let currentY = 0;
+	console.log("renderAudioViz width", width);
 
 	// Plot 1: Waveform
 	const signalGroup = svg.append("g").attr("transform", `translate(0, ${currentY})`);
@@ -231,7 +228,6 @@ function renderAudioViz(svg, config) {
 		.attr("y2", plotHeights[0]) // Make it the full height of the waveform plot
 		.attr("stroke", "red")
 		.attr("stroke-width", 1.5)
-		.style("visibility", "hidden") // Initially hidden
 		.attr("transform", "translate(0, 0)"); // Start at time 0
 
 	// Immediately position the playhead on initial render if time is provided.
@@ -247,7 +243,7 @@ function renderAudioViz(svg, config) {
 	}
 
 	currentY += plotHeights[0] + plotPads;
-	if (gt_start !== undefined && gt_end !== undefined) {
+	if (gt_start !== null && gt_end !== null) {
 		signalGroup.append("rect")
 			.attr("x", xScale(gt_start))
 			.attr("width", xScale(gt_end) - xScale(gt_start))

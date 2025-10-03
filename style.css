@@ -10,58 +10,42 @@ body {
 h2 {
 	font-weight: 500;
 }
-.text-container {
-	width: 800px;
-	padding: 10px;
-	line-height: 2.2;
-	font-size: 16px;
-	font-family: "monospace";
-	margin-bottom: 20px;
-}
+/* .text-container { */
+/* 	width: 100%; */
+/* 	padding: 10px; */
+/* 	line-height: 2.2; */
+/* 	font-size: 16px; */
+/* 	font-family: "monospace"; */
+/* 	margin-bottom: 20px; */
+/* } */
 .token {
 	padding: 4px 2px;
 	border-radius: 4px;
 	transition: all 0.2s ease-in-out;
-	/* transition: background-color 0.3s; /1* Smooth transition for highlighting *1/ */
 }
 .y-axis-label {
 	font-size: 12px;
 	text-anchor: end;
 }
-.plot-container {
-	margin-bottom: 50px;
-	border-top: 1px solid #ccc;
-	background-color: white;
-	padding-top: 20px;
-	border-radius: 8px;
-	box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-}
-
 .column {
 	float: left;
 	width: 50%;
 }
-
-/* Clear floats after the columns */
 .row:after {
 	content: "";
 	display: table;
 	clear: both;
 }
-
 .highlighted-token {
-	background-color: #FFD700; /* A gold/yellow highlight color */
+	background-color: #FFD700;
 	border-radius: 3px;
 }
-
-
 .plot-header {
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
 	margin-bottom: 10px;
 }
-
 .reset-button {
 	padding: 5px 10px;
 	font-size: 12px;
@@ -70,7 +54,49 @@ h2 {
 	background-color: #f0f0f0;
 	border-radius: 4px;
 }
-
 .reset-button:hover {
 	background-color: #e0e0e0;
+}
+.plot-container {
+	width: 100%;
+	padding: 15px;
+	border: 1px solid #ddd;
+	border-radius: 8px;
+	margin-bottom: 30px;
+	box-sizing: border-box;
+	background-color: white;
+	box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+.question-container, .answer-container {
+	word-wrap: break-word;
+	/* font-size: 16px; */
+	font-family: "monospace";
+}
+
+/* create our 2x2 grid */
+#grid-container {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 20px;
+	padding: 10px;
+}
+
+.qid {
+	font-family: "monospace";
+}
+
+@media (max-width: 768px) {
+	#grid-container {
+		/* Switch to a single column on smaller screens */
+		grid-template-columns: 1fr;
+	}
+
+	h2 {
+		text-align: center;
+	}
+}
+
+table {
+	border-collapse: collapse;
+	width: 100%;
 }
