@@ -23,6 +23,7 @@ function measure(el, mainContainer) {
 
 	    return result;
 }
+
 // --- Main function to initialize and draw all visualizations ---
 async function drawAllVisualizations() {
 	// Clear the global playhead updaters to avoid duplicates on redraw
@@ -67,6 +68,7 @@ async function drawAllVisualizations() {
 			plotContainer.innerHTML = `
 				<h3 style="text-align:center;">${experimentModel} ${experimentName}</h3>
 				<div class="plot-header">
+					<p id="${plotId}-current-view">Current viewing aggregate values</p>
 					<button id="${plotId}-reset-button" class="reset-button">Reset View</button>
 				</div>
 				<div id="${plotId}-question" class="question-container"></div>
@@ -93,7 +95,11 @@ async function drawAllVisualizations() {
 
 				const handleTokenClick = (answer_token, i) => {
 					if (!original_question_shapley || !original_audio_shapley) return;
+
 					const currentTime = document.getElementById('audio-player').currentTime;
+
+					document.getElementById(`${plotId}-current-view`).innerHTML = `Current viewing results for t = ${answer_token}`
+
 					const perTokenConfig = {
 						...data, questionContainerId, answerContainerId, audioContainerId,
 						onTokenClick: handleTokenClick,
@@ -108,6 +114,8 @@ async function drawAllVisualizations() {
 
 				const handleResetClick = () => {
 					console.log(`Resetting view for ${model}-${exp}`);
+					document.getElementById(`${plotId}-current-view`).innerHTML = "Current viewing aggregate values"
+
 					const currentTime = document.getElementById('audio-player').currentTime;
 					const defaultConfig = {
 						...data, questionContainerId, answerContainerId, audioContainerId,

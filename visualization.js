@@ -83,7 +83,7 @@ function createModalityVisualization(config) {
 	window.updatePlayheads.push(updateThisPlayhead);
 
 	// --- 3. RENDER VISUALIZATIONS ---
-	renderQuestionViz(questionContainerId, question_tokens, question_shapley_values, colorScale, maxTextShapley, intensity_threshold);
+	renderQuestionViz(questionContainerId, question_tokens, question_shapley_values, colorScale, max_abs_value, intensity_threshold);
 	renderAnswerViz(answerContainerId, answer_tokens, onTokenClick, highlightedTokenIndex);
 
 	const svg = setupSvg(audioContainerId, totalWidth, totalHeight, margin);
