@@ -71,12 +71,15 @@ async function drawAllVisualizations() {
 					<p id="${plotId}-current-view">Current viewing aggregate values</p>
 					<button id="${plotId}-reset-button" class="reset-button">Reset View</button>
 				</div>
-				<div class="plot-header">
-					<p>Audio stats:</p>
-					<p id="${plotId}-audio-stats"></p>
-					<p>Question stats:</p>
-					<p id="${plotId}-question-stats"></p>
-				</div>
+
+				<table id="${plotId}-stats">
+					 <tr> <td></td> <td>min</td> <td>max</td> <td>median</td> </tr>
+						<tr id="${plotId}-audio-stats">
+							<td>Audio</td> <td></td> <td></td> <td></td>
+						</tr>
+						<tr id="${plotId}-question-stats">
+							<td>Text</td> <td></td> <td></td> <td></td> </tr>
+				</table>
 				<div id="${plotId}-question" class="question-container"></div>
 				<div id="${plotId}-answer" class="answer-container"></div>
 				<div id="${plotId}-audio"></div>
@@ -107,8 +110,8 @@ async function drawAllVisualizations() {
 					// plot-header info
 					document.getElementById(`${plotId}-current-view`).innerHTML = `Current viewing results for t = ${answer_token}`
 					const {maxAudio, minAudio, medianAudio, maxText, minText, medianText} = getStats(d3.transpose(original_audio_shapley)[i], d3.transpose(original_question_shapley)[i]);
-					document.getElementById(`${plotId}-audio-stats`).innerHTML = `max: ${maxAudio}, min: ${minAudio}, median: ${medianAudio}`
-					document.getElementById(`${plotId}-question-stats`).innerHTML = `max: ${maxText}, min: ${minText}, median: ${medianText}`
+					document.getElementById(`${plotId}-audio-stats`).innerHTML = `<td>Audio</td> <td>${maxAudio}</td> <td>${minAudio}</td><td>${medianAudio}</td>`
+					document.getElementById(`${plotId}-question-stats`).innerHTML = `<td>Text</td> <td>${maxText}</td> <td>${minText}</td><td>${medianText}</td>`
 
 					const perTokenConfig = {
 						...data, questionContainerId, answerContainerId, audioContainerId,
@@ -127,8 +130,8 @@ async function drawAllVisualizations() {
 					// plot-header info
 					document.getElementById(`${plotId}-current-view`).innerHTML = "Current viewing aggregate values"
 					const {maxAudio, minAudio, medianAudio, maxText, minText, medianText} = getStats(aggregated_audio_shapley, aggregated_question_shapley);
-					document.getElementById(`${plotId}-audio-stats`).innerHTML = `max: ${maxAudio}, min: ${minAudio}, median: ${medianAudio}`
-					document.getElementById(`${plotId}-question-stats`).innerHTML = `max: ${maxText}, min: ${minText}, median: ${medianText}`
+					document.getElementById(`${plotId}-audio-stats`).innerHTML = `<td>Audio</td> <td>${maxAudio}</td> <td>${minAudio}</td><td>${medianAudio}</td>`
+					document.getElementById(`${plotId}-question-stats`).innerHTML = `<td>Text</td> <td>${maxText}</td> <td>${minText}</td><td>${medianText}</td>`
 
 					const currentTime = document.getElementById('audio-player').currentTime;
 					const defaultConfig = {
@@ -146,8 +149,8 @@ async function drawAllVisualizations() {
 				// the repetition of this block is bothering me, but i won't fix it now.
 				document.getElementById(`${plotId}-reset-button`).addEventListener('click', handleResetClick);
 				const {maxAudio, minAudio, medianAudio, maxText, minText, medianText} = getStats(aggregated_audio_shapley, aggregated_question_shapley);
-					document.getElementById(`${plotId}-audio-stats`).innerHTML = `max: ${maxAudio}, min: ${minAudio}, median: ${medianAudio}`
-					document.getElementById(`${plotId}-question-stats`).innerHTML = `max: ${maxText}, min: ${minText}, median: ${medianText}`
+					document.getElementById(`${plotId}-audio-stats`).innerHTML = `<td>Audio</td> <td>${maxAudio}</td> <td>${minAudio}</td><td>${medianAudio}</td>`
+					document.getElementById(`${plotId}-question-stats`).innerHTML = `<td>Text</td> <td>${maxText}</td> <td>${minText}</td><td>${medianText}</td>`
 
 				const vizConfig = {
 					...data, questionContainerId, answerContainerId, audioContainerId,
