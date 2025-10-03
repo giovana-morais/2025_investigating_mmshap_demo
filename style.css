@@ -80,3 +80,7 @@ h2 {
 	gap: 20px;
 	padding: 10px;
 }
+
+.qid {
+	font-family: "monospace";
+}
