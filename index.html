@@ -18,10 +18,32 @@
 			<li><a href="https://github.com/giovana-morais/2025_investigating_mmshap">Code</a></li>
 		</ul>
 
-		<h2>Motivation</h2>
+		<h2>Paper Abstract</h2>
+		<p>Audio Large Language Models (Audio LLMs) enable human-like conversation
+		about music, yet it is unclear if they are truly listening to the audio or
+		just using textual reasoning, as recent benchmarks suggest. This paper
+		investigates this issue by quantifying the contribution of each modality to
+		a model's output.  We adapt the MM-SHAP framework, a performance-agnostic
+		score based on Shapley values that quantifies the relative contribution of
+		each modality to a model’s prediction. We evaluate two models on the
+		MuChoMusic benchmark and find that the model with higher accuracy relies
+		more on text to answer questions, but further inspection shows that even if
+		the overall audio contribution is low, models can successfully localize key
+		sound events, suggesting that audio is not entirely ignored. Our study is
+		the first application of MM-SHAP to Audio LLMs and we hope it will serve as
+		a foundational step for future research in explainable AI and audio.</p>
 
-		In this work, we investigate how Audio LLMs are using the audio
-		information when answering questions. For this, we first calculate Shapley
+		<h3>tl;dr: we explore Audio LLMs with Shapley Values.</h3>
+
+		<h2>Summary of the work</h2>
+
+		<h3>Motivation</h3>
+		<p>In this work, we investigate how Audio LLMs are using audio
+		information to answer multiple-choice questions. We use the
+		<a href="https://mulab-mir.github.io/muchomusic/">MuChoMusic benchmark</a>
+		as our dataset. As report</p>
+
+		For this, we first calculate Shapley
 		values for our audio and text features and use them to measure how each
 		modality contributed to a given output.<br>
 		That sounded like a lot, right? Don't worry. Let's break it down.<br>
@@ -37,6 +59,9 @@
 			C) Tecnho<br>
 			D) Samba<br>
 		</blockquote>
+
+		<h3>Results</h3>
+
 
 		<h2>Examples</h2>
 		We divide our examples in two categories: the ones in which the answer is a
@@ -99,9 +124,11 @@
 		</code>
 
 		<h2>Disclaimer</h2>
+
 		<p>The visualizations were developed in D3.js with the support of
 		Gemini. I (Giovana) reviewed the code and tested it entirely, so any
-		possible problems or inconsistencies are my responsability. Let me know by
+		possible problems or inconsistencies are my responsability.
+		If you find anything weird, let me know by
 		sending an email to giovana.morais@nyu.edu. Thank you!</p>
 </body>
 </html>
