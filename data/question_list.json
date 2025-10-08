@@ -1,0 +1,26 @@
+[
+  {
+    "question_type": "sse",
+    "audio_path": "data/audio/719.wav",
+    "qid": 719,
+    "prompt": "What sound effect can be heard in this piece?"
+  },
+  {
+    "question_type": "sse",
+    "audio_path": "data/audio/427.wav",
+    "qid": 427,
+    "prompt": "Example 2 - QID 427"
+  },
+  {
+    "question_type": "random",
+    "audio_path": "data/audio/123.wav",
+    "qid": 123,
+    "prompt": "A randomly selected question prompt."
+  },
+  {
+    "question_type": "random",
+    "audio_path": "data/audio/456.wav",
+    "qid": 456,
+    "prompt": "Another random example."
+  }
+]
