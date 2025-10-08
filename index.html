@@ -34,6 +34,7 @@
 		<main>
 			<hr>
 			<section id="sec_abstract">
+				<br>
 				<details>
 					<summary><h2>Abstract</h2></summary>
 					<p>Audio Large Language Models (Audio LLMs) enable human-like conversation
@@ -81,24 +82,39 @@
 
 			<p>If you chose option (B) Jackhammer, you're correct and already doing
 			better than a lot of models. How was that? Difficult? Were you able to
-			answer without actually listening to the audio (I would be impressed!)?</p>
+			answer without listening to the audio?</p>
 
-			<p>Based on these Question/Answer pairs, we want to measure how much
+			<p>I know this last question sound
+			strange, but this is what current benchmarks like MuChoMusic, MMAu and
+			MMAU-Pro are telling us: if you replace the actual
+			audio with silence or noise, the models still have a similar performance.
+			And this is what we want to investigate with this project. Are models
+			<b>really</b> using audio? If so, how much?</p>
+
+			<p>So our objective here is to measure how much
 			models use the audio and the text information. To achieve this, we first calculate
 			<a href="https://christophm.github.io/interpretable-ml-book/shapley.html">Shapley
 			values</a> for our audio and text features. Shapley values will tell us
-			how important a feature is for a given output. So in our case, we would
-			see how much the features contributed to the answer a model produce.<br>
+			how important a feature is for a given output. In our case, we would
+			see how much the features contributed to the answer a model produce.
 			Once we have the feature importance, we can use them to calculate the
 			modality contribution. This method is called
-			<a href="https://aclanthology.org/2023.acl-long.223/">MM-SHAP</a>.</p><br>
+			<a href="https://aclanthology.org/2023.acl-long.223/">MM-SHAP</a>.</p>
 
 			<p>We test this approach with 2 models tested in the original MuChoMusic paper:
 			<a href="https://github.com/QwenLM/Qwen-Audio">Qwen-Audio</a> and <a
-				 href="https://github.com/ncsrsadhana/MULLaMA">MU-LLaMA</a>.</p>
+				 href="https://github.com/ncsrsadhana/MULLaMA">MU-LLaMA</a>. Our paper
+			 shows that both models use audio, but the best performing audio uses
+			 <b>less</b> audio than we expected.</p>
+
+			<p>We designed this interactive demo so you could explore more examples on
+			your own. In the paper we were able to discuss only one example, but here
+			we provide good and bad examples. Have fun!</p>
+
 			</section>
 
 			<section id="sec_interactive_examples">
+			<hr>
 			<h2>Interactive examples</h2>
 			<p>We divide our examples in two categories: the ones in which the answer is a
 			single-sounding event (which we inspected and annotated the ground truth)
@@ -226,8 +242,8 @@
 				this demo page, I (Giovana) am responsible for the implementation and
 				testing of this code. I am also responsible for the design, which I am
 				not sure it can be called a design, but nonetheless I think the
-				interactive figures look super cool! If you disagree, please lie
-				to me. It was a lot of work. <br>
+				interactive figures look super cool! If you disagree, please keep it to
+				yourself and avoid hurting my feelings. It was a lot of work. <br>
 				Finally, if you find anything wrong, let me know by sending an email to
 				giovana.morais@nyu.edu or by opening an issue in this demo GitHub repo.<br>
 				Obrigada and have a nice day!</p>
@@ -238,6 +254,6 @@
 
 	<footer>
 		<hr>
-		2025, Giovana Morais
+		2025, Morais G. and Fuentes M., "Investigating Modality Contribution in Audio LLMs for Music"
 	</footer>
 </html>
