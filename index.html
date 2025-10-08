@@ -33,7 +33,7 @@
 
 		<main>
 			<hr>
-			<section id="abstract">
+			<section id="sec_abstract">
 				<details>
 					<summary><h2>Abstract</h2></summary>
 					<p>Audio Large Language Models (Audio LLMs) enable human-like conversation
@@ -52,7 +52,7 @@
 				</details>
 			</section>
 
-			<section id="summary">
+			<section id="sec_summary">
 			<h2>Summary of the work</h2>
 
 			<p>In this work, we investigate how Audio LLMs are using audio
@@ -67,7 +67,7 @@
 			In this benchmark, the prompts are multiple-choice questions regarding the
 			input audio.</p>
 
-			<p>We'll now use a toy example to help:</p>
+			<p>Listen to the toy example audio and try to answer the question:</p>
 
 			<blockquote>
 				<audio controls class="player">
@@ -80,12 +80,17 @@
 			</blockquote>
 
 			<p>If you chose option (B) Jackhammer, you're correct and already doing
-			better than a lot of models.</p>
+			better than a lot of models. How was that? Difficult? Were you able to
+			answer without actually listening to the audio (I would be impressed!)?</p>
 
-			<p>For this, we first calculate
+			<p>Based on these Question/Answer pairs, we want to measure how much
+			models use the audio and the text information. To achieve this, we first calculate
 			<a href="https://christophm.github.io/interpretable-ml-book/shapley.html">Shapley
-			values</a> for our audio and text features and use them to measure how each
-		modality contributed to a given output. This method is called
+			values</a> for our audio and text features. Shapley values will tell us
+			how important a feature is for a given output. So in our case, we would
+			see how much the features contributed to the answer a model produce.<br>
+			Once we have the feature importance, we can use them to calculate the
+			modality contribution. This method is called
 			<a href="https://aclanthology.org/2023.acl-long.223/">MM-SHAP</a>.</p><br>
 
 			<p>We test this approach with 2 models tested in the original MuChoMusic paper:
@@ -93,7 +98,7 @@
 				 href="https://github.com/ncsrsadhana/MULLaMA">MU-LLaMA</a>.</p>
 			</section>
 
-			<section id="interactive_examples">
+			<section id="sec_interactive_examples">
 			<h2>Interactive examples</h2>
 			<p>We divide our examples in two categories: the ones in which the answer is a
 			single-sounding event (which we inspected and annotated the ground truth)
@@ -197,7 +202,7 @@
 			</div>
 			</section>
 
-			<section id="citation">
+			<section id="sec_citation">
 				<h2>Citation (to be updated upon acceptance)</h2>
 				<code id="citation">
 					@misc{morais2025investigatingmodalitycontributionaudio,
@@ -212,7 +217,7 @@
 				</code>
 			</section>
 
-			<section id="disclaimer">
+			<section id="sec_disclaimer">
 				<h2>Disclaimer</h2>
 
 				<p>The visualizations were developed in

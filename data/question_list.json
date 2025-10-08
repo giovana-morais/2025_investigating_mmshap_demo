@@ -13,13 +13,13 @@
   },
   {
     "question_type": "random",
-    "audio_path": "data/audio/123.wav",
+    "audio_path": "data/audio/719.wav",
     "qid": 123,
     "prompt": "A randomly selected question prompt."
   },
   {
     "question_type": "random",
-    "audio_path": "data/audio/456.wav",
+    "audio_path": "data/audio/719.wav",
     "qid": 456,
     "prompt": "Another random example."
   }

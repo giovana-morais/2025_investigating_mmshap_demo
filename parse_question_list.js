@@ -1,7 +1,7 @@
 // This function runs automatically when the page content has finished loading
 document.addEventListener('DOMContentLoaded', function() {
     // Call the main function and tell it where to find the JSON file
-    populateExamples('examples.json');
+    populateExamples('data/question_list.json');
 });
 
 /**
@@ -30,6 +30,7 @@ async function populateExamples(jsonFilePath) {
             // Create a new <div> for this example item
             const itemDiv = document.createElement('div');
             itemDiv.className = 'example_item';
+						console.log("here we are!");
 
             // Create the HTML content for the item
             // This includes the link and the audio player

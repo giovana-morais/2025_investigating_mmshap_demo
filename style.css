@@ -4,6 +4,7 @@ body {
 	flex-direction: column;
 	background-color: #f9f9f9;
 	align-items: center;
+	font-family: "Courier New", monospace;
 }
 
 .body_main_page {
@@ -14,7 +15,7 @@ body {
 	text-align: justify;
 	/* font-family: Roboto, monospace; */
 	/* font-family: 'Lucida Console'; */
-	/* font-family: "Courier New", monospace; */
+	font-family: "Courier New", monospace;
 }
 
 .body_main_page h1, h2, h3 {
