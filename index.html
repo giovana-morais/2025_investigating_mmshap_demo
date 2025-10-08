@@ -8,7 +8,8 @@
 	</head>
 
 	<body class="body_main_page">
-		<div class="header">
+		<header>
+		<!-- <div class="header"> -->
 			<h1>Investigating Modality Contribution in Audio LLMs for Music</h1>
 			<div class="row">
 				<div class="column"><a href="https://giovana-morais.github.io"><h3>Giovana
@@ -28,27 +29,30 @@
 				<div class="column"><a href="https://arxiv.org/pdf/2509.20641"><h2>Paper</h2></a></div>
 				<div class="column"><a href="https://github.com/giovana-morais/2025_investigating_mmshap"><h2>Code</h2></a></div>
 			</div>
-		</div>
+		</header>
 
-		<div class="content">
+		<main>
 			<hr>
-			<details>
-				<summary><h2>Abstract</h2></summary>
-				<p>Audio Large Language Models (Audio LLMs) enable human-like conversation
-				about music, yet it is unclear if they are truly listening to the audio or
-				just using textual reasoning, as recent benchmarks suggest. This paper
-				investigates this issue by quantifying the contribution of each modality to
-				a model's output.  We adapt the MM-SHAP framework, a performance-agnostic
-				score based on Shapley values that quantifies the relative contribution of
-				each modality to a model’s prediction. We evaluate two models on the
-				MuChoMusic benchmark and find that the model with higher accuracy relies
-				more on text to answer questions, but further inspection shows that even if
-				the overall audio contribution is low, models can successfully localize key
-				sound events, suggesting that audio is not entirely ignored. Our study is
-				the first application of MM-SHAP to Audio LLMs and we hope it will serve as
-				a foundational step for future research in explainable AI and audio.</p>
-			</details>
+			<section id="abstract">
+				<details>
+					<summary><h2>Abstract</h2></summary>
+					<p>Audio Large Language Models (Audio LLMs) enable human-like conversation
+					about music, yet it is unclear if they are truly listening to the audio or
+					just using textual reasoning, as recent benchmarks suggest. This paper
+					investigates this issue by quantifying the contribution of each modality to
+					a model's output.  We adapt the MM-SHAP framework, a performance-agnostic
+					score based on Shapley values that quantifies the relative contribution of
+					each modality to a model’s prediction. We evaluate two models on the
+					MuChoMusic benchmark and find that the model with higher accuracy relies
+					more on text to answer questions, but further inspection shows that even if
+					the overall audio contribution is low, models can successfully localize key
+					sound events, suggesting that audio is not entirely ignored. Our study is
+					the first application of MM-SHAP to Audio LLMs and we hope it will serve as
+					a foundational step for future research in explainable AI and audio.</p>
+				</details>
+			</section>
 
+			<section id="summary">
 			<h2>Summary of the work</h2>
 
 			<p>In this work, we investigate how Audio LLMs are using audio
@@ -87,7 +91,9 @@
 			<p>We test this approach with 2 models tested in the original MuChoMusic paper:
 			<a href="https://github.com/QwenLM/Qwen-Audio">Qwen-Audio</a> and <a
 				 href="https://github.com/ncsrsadhana/MULLaMA">MU-LLaMA</a>.</p>
+			</section>
 
+			<section id="interactive_examples">
 			<h2>Interactive examples</h2>
 			<p>We divide our examples in two categories: the ones in which the answer is a
 			single-sounding event (which we inspected and annotated the ground truth)
@@ -189,33 +195,44 @@
 					</audio>
 				</div>
 			</div>
+			</section>
 
-			<h2>Citation</h2>
-			<code id="citation">
-				@misc{morais2025investigatingmodalitycontributionaudio,
-					title={Investigating Modality Contribution in Audio LLMs for Music},
-					author={Giovana Morais and Magdalena Fuentes},
-					year={2025},
-					eprint={2509.20641},
-					archivePrefix={arXiv},
-					primaryClass={cs.LG},
-					url={https://arxiv.org/abs/2509.20641},
-				}
-			</code>
+			<section id="citation">
+				<h2>Citation (to be updated upon acceptance)</h2>
+				<code id="citation">
+					@misc{morais2025investigatingmodalitycontributionaudio,
+						title={Investigating Modality Contribution in Audio LLMs for Music},
+						author={Giovana Morais and Magdalena Fuentes},
+						year={2025},
+						eprint={2509.20641},
+						archivePrefix={arXiv},
+						primaryClass={cs.LG},
+						url={https://arxiv.org/abs/2509.20641},
+					}
+				</code>
+			</section>
 
-			<h2>Disclaimer</h2>
+			<section id="disclaimer">
+				<h2>Disclaimer</h2>
 
-			<p>The visualizations were developed in
-			<a href="https://d3js.org/">D3.js</a> with the support of
-			<a href="https://gemini.google.com/app">Gemini</a>. I (Giovana) reviewed the code and tested it entirely, so any
-			possible problems or inconsistencies are my responsability. Also, I'm a
-			terrible designer and front-end developer. That is to say that the source
-			code of this demo will 100% chaotic and probably get my computer science
-			degree revoked. But, let's be honest, it looks super cool! If you
-			disagree, please lie to me.
-			If you find anything wrong, let me know by
-			sending an email to giovana.morais@nyu.edu.<br>Obrigada!</p>
-		</div>
-		<script src="js/parse_question_list.js"></script>
+				<p>The visualizations were developed in
+				<a href="https://d3js.org/">D3.js</a> with the support of <a
+					href="https://gemini.google.com/app">Gemini</a>. As the developed of
+				this demo page, I (Giovana) am responsible for the implementation and
+				testing of this code. I am also responsible for the design, which I am
+				not sure it can be called a design, but nonetheless I think the
+				interactive figures look super cool! If you disagree, please lie
+				to me. It was a lot of work. <br>
+				Finally, if you find anything wrong, let me know by sending an email to
+				giovana.morais@nyu.edu or by opening an issue in this demo GitHub repo.<br>
+				Obrigada and have a nice day!</p>
+			</section>
+		</main>
+		<script src="parse_question_list.js"></script>
 	</body>
+
+	<footer>
+		<hr>
+		2025, Giovana Morais
+	</footer>
 </html>
