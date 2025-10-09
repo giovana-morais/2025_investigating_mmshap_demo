@@ -1,6 +1,4 @@
-// This function runs automatically when the page content has finished loading
 document.addEventListener('DOMContentLoaded', function() {
-    // Call the main function and tell it where to find the JSON file
     populateExamples('data/question_list.json');
 });
 
