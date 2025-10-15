@@ -58,15 +58,17 @@ async function drawToyExampleVisualization() {
             <p id="${plotId}-current-view">Current viewing aggregate values</p>
             <button id="${plotId}-reset-button" class="reset-button">Reset View</button>
         </div>
-        <table id="${plotId}-stats">
-            <tr> <td></td> <td>min</td> <td>max</td> <td>median</td> </tr>
-            <tr id="${plotId}-audio-stats">
-                <td>Audio</td> <td></td> <td></td> <td></td>
-            </tr>
-            <tr id="${plotId}-question-stats">
-                <td>Text</td> <td></td> <td></td> <td></td>
-            </tr>
-        </table>
+				<details>
+					<summary>Statistics</summary>
+					<table id="${plotId}-stats">
+						 <tr> <td></td> <td>min</td> <td>max</td> <td>median</td> </tr>
+							<tr id="${plotId}-audio-stats">
+								<td>Audio</td> <td></td> <td></td> <td></td>
+							</tr>
+							<tr id="${plotId}-question-stats">
+								<td>Text</td> <td></td> <td></td> <td></td> </tr>
+					</table>
+				</details>
         <div id="${plotId}-question" class="question-container"></div>
         <div id="${plotId}-answer" class="answer-container"></div>
         <div id="${plotId}-audio"></div>
