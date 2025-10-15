@@ -102,7 +102,7 @@ async function drawAllVisualizations() {
 
 				const data = await d3.json(dataFile);
 
-				document.getElementById("qid").innerHTML = `track_id = ${data.title}, qid = ${qid}`;
+				// document.getElementById("qid").innerHTML = `track_id = ${data.title}, qid = ${qid}`;
 
 				const original_question_shapley = Array.isArray(data.question_shapley_values[0]) ? data.question_shapley_values : null;
 				const original_audio_shapley = Array.isArray(data.audio_shapley_values[0]) ? data.audio_shapley_values : null;
