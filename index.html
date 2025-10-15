@@ -8,6 +8,10 @@
 	</head>
 
 	<body class="body_main_page">
+		<script src="https://d3js.org/d3.v7.min.js"></script>
+		<script src="visualization.js"></script>
+		<script src="parse_question_list.js"></script>
+		<script src="add_interactive_plot.js"></script>
 		<header>
 		<!-- <div class="header"> -->
 			<h1>Investigating Modality Contribution in Audio LLMs for Music</h1>
@@ -126,19 +130,22 @@
 			<p>In the subsection below, we provide a brief explanation of the plot
 			components. Feel free to skip it and play with the examples.</p>
 
-			<details>
+			<details open>
 				<summary><h3>How to read the plots</h3></summary>
 
 				<p>Each plot will have a similar structure to this one:
 				<br>
-				<!-- <img src="data/figs/placeholder.png"></img> -->
-
+				<div class="audio-container">
+					<audio id="toy-example-player" controls class="player">
+						<source src="data/audio/toy_example.wav" type="audio/wav">
+					</audio>
+				</div><br>
 				<div id="toy-example-container"></div>
 				<br>
-				which has a lot of information to unpack.</p>
 
+				Let's go over the different components in this plot:
 				<ul>
-					<li><b>Experiment</b> name: this is a combination of the model + input type.
+					<li><b>Experiment name</b>: a combination of the model + input type.
 						So, in our example "Qwen-Audio MC-PI" we have the model
 						<b>Qwen-Audio</b> and the experiment <b>Multiple-Choice with Previous
 							Instructions</b>.</li>
@@ -149,26 +156,38 @@
 					is optional.</li>
 					<li><b>Question</b>: this is the prompt that the model receive. We display this
 						information here as a <i>list of tokens</i> that the model uses based
-						on the input. </li>
+						on the input. For readibility
+						purposes, we only highlight question tokens that have a Shapley value
+						greater than 80% of the highest value.</li>
 					<li><b>Model Answer</b>: this is the model output. Here is where the
 						interactivit shines. You can click in whatever
 						token you want to see how much both audio and the input text contributed to
 						the generated token. If you want to go back to the original aggregated
-						view, just click in the "Reset view" button.</li>
+						view, just click in the "Reset view" button. </li>
 					<li><b>Waveform</b>: the input waveform. You can click in a timestamp on it to
-						update the audio player. The playhead is shared among the plots.</li>
-					<li><b>Absolute value</b>: This is the absolute value of this sample
+						update the audio player. Here we have only one audio player and one plot,
+						but in the comparison page we'll have one audio player and four
+						plots. The playhead is shared among the plots.</li>
+					<li><b>Absolute value</b>: the absolute value of this sample
 						Shapley values. In practice, this is what is used to calculate the
 						modality contribution score. It uses positive and negative values
 						equally.</li>
-					<li><b>Positive Only</b>: This subplot shows only the positive Shapley
+					<li><b>Positive Only</b>: only the positive Shapley
 						values, meaning that it highlights the features that contributed
-						<b>positively</b> for the given output.</li>
-					<li><b>Negative Only</b>: As before, this subplot shows only the
+						<b>positively</b> for the given output. So if a region is
+						"activated" in this subplot, that means that this region is
+						important to the output.</li>
+					<li><b>Negative Only</b>: as before, only the
 						negative Shapley values, so it shows what features contributed
-						negatively to the output</li>
+						negatively to the output.</li>
 				</ul>
+
+				<p>Important to notice that the values are <b>zero</b> whenever the feature
+				has no contribution. In the audio, we see that all the silent regions
+				have zero contribution, independent of the output token or aggregated
+				view. (:</p>
 			</details>
+
 
 
 			<h3>Single-sounding events</h3>
@@ -242,8 +261,8 @@
 				<a href="https://d3js.org/">D3.js</a> with the support of <a
 					href="https://gemini.google.com/app">Gemini</a>. As the lead developer of
 				this demo page, I (Giovana) am responsible for the implementation and
-				testing of this code. I am also responsible for the page design. I am
-				sorry for that.<br>
+				testing of this code. I also designed this website myself. It looks
+				ugly, but sorry not sorry.<br>
 				If you find anything wrong, let me know by sending an email to
 				giovana.morais@nyu.edu or by creating an issue the
 				<a href="https://github.com/giovana-morais/2025_investigating_mmshap_demo">GitHub
@@ -251,8 +270,6 @@
 				Muito obrigada and have a nice day!</p>
 			</section>
 		</main>
-		<script src="parse_question_list.js"></script>
-		<script src="add_interactive_plot.js"></script>
 	</body>
 
 	<footer>
