@@ -12,6 +12,17 @@
 		<script src="visualization.js"></script>
 		<script src="parse_question_list.js"></script>
 		<script src="add_interactive_plot.js"></script>
+
+		<nav style="border-bottom: 1px solid black">
+			<ol class="crumbs">
+				<li><a href="index.html">Home</a></li>
+			</ol>
+			<ul class="nav-links">
+					<li><a href="https://arxiv.org/pdf/2509.20641">Paper</a></li>
+					<li><a href="https://github.com/giovana-morais/2025_investigating_mmshap">Code</a></li>
+			</ul>
+		</nav>
+
 		<header>
 		<!-- <div class="header"> -->
 			<h1>Investigating Modality Contribution in Audio LLMs for Music</h1>
@@ -29,14 +40,15 @@
 				<div class="column"><sup>2</sup>: New York University, Integrated Design and Media</div>
 			</div>
 			<br>
-			<div class="row">
-				<div class="column"><a href="https://arxiv.org/pdf/2509.20641"><h2>Paper</h2></a></div>
-				<div class="column"><a href="https://github.com/giovana-morais/2025_investigating_mmshap"><h2>Code</h2></a></div>
-			</div>
 		</header>
 
+		<nav style="text-align: center; margin: 20px 0;">
+			<a href="#sec_abstract">Abstract</a> |
+			<a href="#sec_summary">Summary</a> |
+			<a href="#sec_interactive_examples">Examples</a> |
+			<a href="#sec_citation">Citation</a>
+		</nav>
 		<main>
-			<hr>
 			<section id="sec_abstract">
 				<br>
 				<details>
@@ -88,22 +100,25 @@
 			better than a lot of models. How was that? Difficult? Were you able to
 			answer without listening to the audio?</p>
 
-			<p>I know this last question sound
-			strange, but this is what current benchmarks like MuChoMusic, MMAu and
-			MMAU-Pro are telling us: if you replace the actual
-			audio with silence or noise, the models still have a similar performance.
-			And this is what we want to investigate with this project. Are models
-			<b>really</b> using audio? If so, how much?</p>
+			<p>I know this last question sounds counter-intuitive, but current
+			benchmarks like like MuChoMusic, MMAU and MMAU-Pro are telling us that
+			Audio LLMs performance will not change if you replace the
+			actual audio with silence or noise. And this is what we want to
+			investigate with this project. Are models <b>really</b> using audio input? If
+			so, how much?</p>
 
-			<p>So our objective here is to measure how much
-			models use the audio and the text information. To achieve this, we first calculate
-			<a href="https://christophm.github.io/interpretable-ml-book/shapley.html">Shapley
-			values</a> for our audio and text features. Shapley values will tell us
-			how important a feature is for a given output. In our case, we would
-			see how much the features contributed to the answer a model produce.
-			Once we have the feature importance, we can use them to calculate the
-			modality contribution. This method is called
-			<a href="https://aclanthology.org/2023.acl-long.223/">MM-SHAP</a>.</p>
+			<p>So our objective here is to measure how much models use the audio and
+			the text information. To achieve this, we first calculate <a
+			href="https://christophm.github.io/interpretable-ml-book/shapley.html">Shapley
+			values</a> for our audio and text features. Think of it like this: if a you
+			and your friends win a game, how much did you contribute to the win?  Shapley
+			values provides us with a tool to assign credit to each player.  Translating
+			this to our problem, Shapley values will tell us how much audio and text
+			features contribute to the model's answer. In our case, we would see how much
+			the features contributed to the answer a model produce.  Once we have the
+			feature importance, we can use them to calculate the modality contribution.
+			This method is called <a
+			href="https://aclanthology.org/2023.acl-long.223/">MM-SHAP</a>.</p>
 
 			<p>We test this approach with 2 models tested in the original MuChoMusic paper:
 			<a href="https://github.com/QwenLM/Qwen-Audio">Qwen-Audio</a> and <a
@@ -152,7 +167,7 @@
 					<li><b>Current view</b>: this is whether we are looking into the aggregate
 						view, i.e. sum across output tokens, or the values for a single
 						token.</li>
-					<li><b>Stats</b>: a brief view of the actual values of the features. This view
+					<li><b>Statisticss</b>: a brief view of the actual values of the features. This view
 					is optional.</li>
 					<li><b>Question</b>: this is the prompt that the model receive. We display this
 						information here as a <i>list of tokens</i> that the model uses based
@@ -240,7 +255,7 @@
 			</section>
 
 			<section id="sec_citation">
-				<h2>Citation (to be updated)</h2>
+				<h2>Citation</h2>
 				<code id="citation">
 					@misc{morais2025investigatingmodalitycontributionaudio,
 						title={Investigating Modality Contribution in Audio LLMs for Music},
@@ -261,8 +276,7 @@
 				<a href="https://d3js.org/">D3.js</a> with the support of <a
 					href="https://gemini.google.com/app">Gemini</a>. As the lead developer of
 				this demo page, I (Giovana) am responsible for the implementation and
-				testing of this code. I also designed this website myself. It looks
-				ugly, but sorry not sorry.<br>
+				testing of this code.<br>
 				If you find anything wrong, let me know by sending an email to
 				giovana.morais@nyu.edu or by creating an issue the
 				<a href="https://github.com/giovana-morais/2025_investigating_mmshap_demo">GitHub

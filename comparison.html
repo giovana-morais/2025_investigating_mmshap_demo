@@ -11,14 +11,23 @@
 		<script src="https://d3js.org/d3.v7.min.js"></script>
 		<script src="visualization.js"></script>
 
-		<h1><a href="index.html">Go Back</a></h1>
+		<nav style="border-bottom: 1px solid black">
+			<ol class="crumbs">
+				<li class="crumb"><a href="index.html">Home</a></li>
+				<li class="crumb" id="crumb_title">Comparison</li>
+			</ol>
+			<ul class="nav-links">
+					<li><a href="https://arxiv.org/pdf/2509.20641">Paper</a></li>
+					<li><a href="https://github.com/giovana-morais/2025_investigating_mmshap">Code</a></li>
+			</ul>
+		</nav>
 
-		<h1 id="qid">QID </h1>
+		<!-- <h1 id="qid">QID </h1> -->
+		<h2>Click on the answer token to visualize individual contributions</h2>
 		<audio controls class="player" id="audio-player">
 			<source src="data/audio/719.wav" type="audio/wav">
 		</audio>
 
-		<h2>Click on the answer token to visualize individual contributions</h2>
 
 		<div id="grid-container">
 			<div id="qwen-fs-container"></div>
