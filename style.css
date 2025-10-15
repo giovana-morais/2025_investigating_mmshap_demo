@@ -4,7 +4,7 @@ body {
 	flex-direction: column;
 	background-color: #f9f9f9;
 	align-items: center;
-	font-family: "Courier New", monospace;
+	font-family: monospace;
 }
 
 nav {
@@ -12,7 +12,7 @@ nav {
   justify-content: space-between;  /* Pushes children to opposite ends */
   align-items: center;           /* Vertically aligns items in the middle */
   width: 100%;                   /* Ensures it spans the full width */
-  border-bottom: 1px solid black;/* The full-width bottom border */
+  /* border-bottom: 1px solid black;/1* The full-width bottom border *1/ */
   padding: 5px 0;                /* Adds a little vertical space */
 }
 
@@ -108,7 +108,7 @@ blockquote {
 	background-color: #f0f0f0;
 	display: block;
 	font-size: medium;
-	/* font-family: 'Lucida Console', monospace; */
+	font-family: monospace;
   white-space: pre-wrap;
   word-break: break-word;
   border-radius: 8px;
@@ -192,6 +192,7 @@ img { max-width: 100%; height: auto; }
 	background-color: white;
 	box-shadow: 0 4px 12px rgba(0,0,0,0.08);
 }
+
 .question-container, .answer-container {
 	word-wrap: break-word;
 	/* font-size: 16px; */
