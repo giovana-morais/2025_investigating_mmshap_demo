@@ -1,0 +1,227 @@
+/* text properties */
+body {
+	display: flex;
+	flex-direction: column;
+	background-color: #f9f9f9;
+	align-items: center;
+	font-family: monospace;
+}
+
+nav {
+  display: flex;                 /* Use flexbox for alignment */
+  justify-content: space-between;  /* Pushes children to opposite ends */
+  align-items: center;           /* Vertically aligns items in the middle */
+  width: 100%;                   /* Ensures it spans the full width */
+  /* border-bottom: 1px solid black;/1* The full-width bottom border *1/ */
+  padding: 5px 0;                /* Adds a little vertical space */
+}
+
+ol.crumbs {
+  list-style-type: none;
+  padding-left: 0;
+  margin: 0; /* Remove default margin */
+}
+
+.nav-links {
+  display: flex;      /* Aligns "Paper" and "Code" horizontally */
+  list-style: none;   /* Removes bullet points */
+  margin: 0;          /* Removes default margin */
+  padding: 0;         /* Removes default padding */
+  gap: 1.5em;         /* Adds space between the links */
+  font-weight: bold;  /* Optional: makes the links bolder */
+}
+
+.nav-links a {
+    color: black;
+    text-decoration: none;
+}
+
+.nav-links a:hover {
+    text-decoration: underline;
+}
+
+.crumbs ol {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+.crumb {
+  display: inline-block;
+}
+
+.crumb a::after {
+  display: inline-block;
+  color: black;
+  content: ">";
+  font-size: 80%;
+  font-weight: bold;
+  padding: 0 3px;
+}
+
+footer {
+	font-size: small;
+	color: #898989;
+}
+
+.body_main_page {
+	max-width: 960px;
+	padding: 0 20px;
+	margin: 20px auto;
+	justify-content: center;
+	text-align: justify;
+	/* font-family: Roboto, monospace; */
+	/* font-family: 'Lucida Console'; */
+	font-family: "Courier New", monospace;
+}
+
+.body_main_page h1, h2, h3 {
+	text-align: center;
+}
+
+.row {
+    display: flex;
+    justify-content: center;
+    gap: 1.5em; /* Adds some space between the authors' names */
+    flex-wrap: wrap; /* Allows items to wrap on smaller screens if needed */
+}
+
+l.refs_navbar {
+    display: flex;
+    justify-content: center;
+    list-style: none; /* Removes the bullet points */
+    padding: 0; /* Removes default browser padding */
+    gap: 2em; /* Adds space between "Paper" and "Code" */
+}
+
+
+blockquote {
+	/* font-family: 'Lucida Console', monospace; */
+	background-color: #f0f0f0;
+	text-align: center;
+	padding: 15px;
+	margin: 20px 0;
+	border-left: 5px solid #ccc;/* Adds a subtle accent border on the left */
+	border-radius: 8px;
+}
+
+#citation {
+	background-color: #f0f0f0;
+	display: block;
+	font-size: medium;
+	font-family: monospace;
+  white-space: pre-wrap;
+  word-break: break-word;
+  border-radius: 8px;
+  margin: 10px 0;
+}
+
+hr {
+	width: 50%;
+	color: #f0f0f0;
+}
+
+.example_list {
+	text-align: center;
+	margin-bottom: 20px;
+}
+
+.audio-container {
+	display: flex;
+	justify-content: center;
+}
+
+details>summary {
+  list-style: none;
+	text-align: center;
+}
+
+summary h2, h3{
+  display: inline;
+}
+
+summary::-webkit-details-marker {
+  display: none
+}
+
+summary::after {
+  content: ' (+)';
+}
+details[open] summary:after {
+  content: " (-)";
+}
+img { max-width: 100%; height: auto; }
+
+/* plot properties */
+.token {
+	padding: 4px 2px;
+	border-radius: 4px;
+	transition: all 0.2s ease-in-out;
+}
+.y-axis-label {
+	font-size: 12px;
+	text-anchor: end;
+}
+.highlighted-token {
+	background-color: #FFD700;
+	border-radius: 3px;
+}
+.plot-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 10px;
+}
+.reset-button {
+	padding: 5px 10px;
+	font-size: 12px;
+	cursor: pointer;
+	border: 1px solid #ccc;
+	background-color: #f0f0f0;
+	border-radius: 4px;
+}
+.reset-button:hover {
+	background-color: #e0e0e0;
+}
+.plot-container {
+	width: 100%;
+	padding: 15px;
+	border: 1px solid #ddd;
+	border-radius: 8px;
+	margin-bottom: 30px;
+	box-sizing: border-box;
+	background-color: white;
+	box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.question-container, .answer-container {
+	word-wrap: break-word;
+	/* font-size: 16px; */
+	font-family: "monospace";
+}
+
+/* create our 2x2 grid */
+#grid-container {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 20px;
+	padding: 10px;
+}
+
+.qid {
+	font-family: "monospace";
+}
+
+@media (max-width: 768px) {
+	#grid-container {
+		/* Switch to a single column on smaller screens */
+		grid-template-columns: 1fr;
+	}
+
+	h2 {
+		text-align: center;
+	}
+}
+
+table {
+	border-collapse: collapse;
+	width: 100%;

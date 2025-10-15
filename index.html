@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link rel="stylesheet" href="style.css">
+		<title>Investigating Modality Contribution in Audio LLMs for Music</title>
+	</head>
+
+	<body class="body_main_page">
+		<script src="https://d3js.org/d3.v7.min.js"></script>
+		<script src="visualization.js"></script>
+		<script src="parse_question_list.js"></script>
+		<script src="add_interactive_plot.js"></script>
+
+		<nav style="border-bottom: 1px solid black">
+			<ol class="crumbs">
+				<li><a href="index.html">Home</a></li>
+			</ol>
+			<ul class="nav-links">
+					<li><a href="https://arxiv.org/pdf/2509.20641">Paper</a></li>
+					<li><a href="https://github.com/giovana-morais/2025_investigating_mmshap">Code</a></li>
+			</ul>
+		</nav>
+
+		<header>
+		<!-- <div class="header"> -->
+			<h1>Investigating Modality Contribution in Audio LLMs for Music</h1>
+			<div class="row">
+				<div class="column"><a href="https://giovana-morais.github.io"><h3>Giovana
+							Morais<sup>1</sup></h3></a></div>
+				<div class="column"><a href="https://magdalenafuentes.com"><h3>Magdalena
+							Fuentes<sup>1,2</sup><h3></a></div>
+			</div>
+			</div>
+			<div class="row">
+				<div class="column"><sup>1</sup>: New York University, Music and Audio Research Lab</div>
+			</div>
+			<div class="row">
+				<div class="column"><sup>2</sup>: New York University, Integrated Design and Media</div>
+			</div>
+			<br>
+		</header>
+
+		<nav style="text-align: center; margin: 20px 0;">
+			<a href="#sec_abstract">Abstract</a> |
+			<a href="#sec_summary">Summary</a> |
+			<a href="#sec_interactive_examples">Examples</a> |
+			<a href="#sec_citation">Citation</a>
+		</nav>
+		<main>
+			<section id="sec_abstract">
+				<br>
+				<details>
+					<summary><h2>Abstract</h2></summary>
+					<p>Audio Large Language Models (Audio LLMs) enable human-like conversation
+					about music, yet it is unclear if they are truly listening to the audio or
+					just using textual reasoning, as recent benchmarks suggest. This paper
+					investigates this issue by quantifying the contribution of each modality to
+					a model's output.  We adapt the MM-SHAP framework, a performance-agnostic
+					score based on Shapley values that quantifies the relative contribution of
+					each modality to a model’s prediction. We evaluate two models on the
+					MuChoMusic benchmark and find that the model with higher accuracy relies
+					more on text to answer questions, but further inspection shows that even if
+					the overall audio contribution is low, models can successfully localize key
+					sound events, suggesting that audio is not entirely ignored. Our study is
+					the first application of MM-SHAP to Audio LLMs and we hope it will serve as
+					a foundational step for future research in explainable AI and audio.</p>
+				</details>
+			</section>
+
+			<section id="sec_summary">
+			<h2>Summary of the work</h2>
+
+			<p>In this work, we investigate how Audio LLMs are using audio
+			information to answer multiple-choice questions.
+			An Audio LLM is a Large Language Model that is capable of
+			processing audio data. These models usually receive as input, an audio file
+			(.wav, .mp3 etc) and a text prompt. In theory, the prompt can be any text.
+
+			We use the
+			<a href="https://mulab-mir.github.io/muchomusic/">MuChoMusic benchmark</a>
+			as our dataset.
+			In this benchmark, the prompts are multiple-choice questions regarding the
+			input audio.</p>
+
+			<p>Listen to the toy example audio and try to answer the question:</p>
+
+			<blockquote>
+				<audio controls class="player">
+					<source src="data/audio/toy_example.wav" type="audio/wav">
+				</audio> <br><br>
+
+				What is the sound that happen in the audio?<br>
+				Options: (A) Crickets (B) Jackhammer (C) Birds chirping (D) Car horn<br>
+				The correct answer is:
+			</blockquote>
+
+			<p>If you chose option (B) Jackhammer, you're correct and already doing
+			better than a lot of models. How was that? Difficult? Were you able to
+			answer without listening to the audio?</p>
+
+			<p>I know this last question sounds counter-intuitive, but current
+			benchmarks like like MuChoMusic, MMAU and MMAU-Pro are telling us that
+			Audio LLMs performance will not change if you replace the
+			actual audio with silence or noise. And this is what we want to
+			investigate with this project. Are models <b>really</b> using audio input? If
+			so, how much?</p>
+
+			<p>So our objective here is to measure how much models use the audio and
+			the text information. To achieve this, we first calculate <a
+			href="https://christophm.github.io/interpretable-ml-book/shapley.html">Shapley
+			values</a> for our audio and text features. Think of it like this: if a you
+			and your friends win a game, how much did you contribute to the win?  Shapley
+			values provides us with a tool to assign credit to each player.  Translating
+			this to our problem, Shapley values will tell us how much audio and text
+			features contribute to the model's answer. In our case, we would see how much
+			the features contributed to the answer a model produce.  Once we have the
+			feature importance, we can use them to calculate the modality contribution.
+			This method is called <a
+			href="https://aclanthology.org/2023.acl-long.223/">MM-SHAP</a>.</p>
+
+			<p>We test this approach with 2 models tested in the original MuChoMusic paper:
+			<a href="https://github.com/QwenLM/Qwen-Audio">Qwen-Audio</a> and <a
+				 href="https://github.com/ncsrsadhana/MULLaMA">MU-LLaMA</a>. Our paper
+			 shows that both models use audio, but the best performing audio uses
+			 <b>less</b> audio than we expected.</p>
+
+			<p>We designed this interactive demo so you could explore more examples on
+			your own. In the paper we were able to discuss only one example, but here
+			we provide good and bad examples. Have fun!</p>
+
+			</section>
+
+			<section id="sec_interactive_examples">
+			<hr>
+			<h2>Interactive examples</h2>
+			<p>We divide our examples in two categories: the ones in which the answer is a
+			single-sounding event (which we inspected and annotated the ground truth)
+			and randomly selected examples. For the random examples, we do not have the
+			ground truth annotations as the answer usually required long-term
+			understanding of the audio. As discussed in our paper, how to annotate those
+			examples remains an open question.</p>
+
+			<p>In the subsection below, we provide a brief explanation of the plot
+			components. Feel free to skip it and play with the examples.</p>
+
+			<details open>
+				<summary><h3>How to read the plots</h3></summary>
+
+				<p>Each plot will have a similar structure to this one:
+				<br>
+				<div class="audio-container">
+					<audio id="toy-example-player" controls class="player">
+						<source src="data/audio/toy_example.wav" type="audio/wav">
+					</audio>
+				</div><br>
+				<div id="toy-example-container"></div>
+				<br>
+
+				Let's go over the different components in this plot:
+				<ul>
+					<li><b>Experiment name</b>: a combination of the model + input type.
+						So, in our example "Qwen-Audio MC-PI" we have the model
+						<b>Qwen-Audio</b> and the experiment <b>Multiple-Choice with Previous
+							Instructions</b>.</li>
+					<li><b>Current view</b>: this is whether we are looking into the aggregate
+						view, i.e. sum across output tokens, or the values for a single
+						token.</li>
+					<li><b>Statisticss</b>: a brief view of the actual values of the features. This view
+					is optional.</li>
+					<li><b>Question</b>: this is the prompt that the model receive. We display this
+						information here as a <i>list of tokens</i> that the model uses based
+						on the input. For readibility
+						purposes, we only highlight question tokens that have a Shapley value
+						greater than 80% of the highest value.</li>
+					<li><b>Model Answer</b>: this is the model output. Here is where the
+						interactivit shines. You can click in whatever
+						token you want to see how much both audio and the input text contributed to
+						the generated token. If you want to go back to the original aggregated
+						view, just click in the "Reset view" button. </li>
+					<li><b>Waveform</b>: the input waveform. You can click in a timestamp on it to
+						update the audio player. Here we have only one audio player and one plot,
+						but in the comparison page we'll have one audio player and four
+						plots. The playhead is shared among the plots.</li>
+					<li><b>Absolute value</b>: the absolute value of this sample
+						Shapley values. In practice, this is what is used to calculate the
+						modality contribution score. It uses positive and negative values
+						equally.</li>
+					<li><b>Positive Only</b>: only the positive Shapley
+						values, meaning that it highlights the features that contributed
+						<b>positively</b> for the given output. So if a region is
+						"activated" in this subplot, that means that this region is
+						important to the output.</li>
+					<li><b>Negative Only</b>: as before, only the
+						negative Shapley values, so it shows what features contributed
+						negatively to the output.</li>
+				</ul>
+
+				<p>Important to notice that the values are <b>zero</b> whenever the feature
+				has no contribution. In the audio, we see that all the silent regions
+				have zero contribution, independent of the output token or aggregated
+				view. (:</p>
+			</details>
+
+
+
+			<h3>Single-sounding events</h3>
+			<p>Those are events that the answer is very well localized in the sound. We
+			refer again to our paper in case you want to see the methodology in
+			details. To see the comparison across experiments, click in the question.</p>
+
+			<div class="example_list" id="sse_list">
+				<div class="example_item">
+					<a href="comparison.html?qid=719">What sound effect can be heard in this
+						piece?</a>
+					<br>
+					<audio controls class="player">
+						<source src="data/audio/719.wav" type="audio/wav">
+					</audio>
+				</div>
+				<div class="example_item">
+					<a href="comparison.html?qid=427">Example 2 - QID 427</a>
+					<br>
+					<audio controls class="player">
+						<source src="data/audio/719.wav" type="audio/wav">
+					</audio>
+				</div>
+			</div>
+
+			<br>
+			<h3>Random Examples</h3>
+			<p>Those were chosen randomly to show that the method is harder to
+			interpret depending on the scenario. Here we have questions that the
+			answer is not a single sound. In MuChoMusic, these questions are the
+			majority. To see the comparison across experiments, click the question.</p>
+			<br>
+			<div class="example_list" id="random_list">
+				<div class="example_item">
+					<a href="comparison.html?qid=719">What sound effect can be heard in this
+						piece?</a>
+					<br>
+					<audio controls class="player">
+						<source src="data/audio/719.wav" type="audio/wav">
+					</audio>
+				</div>
+				<div class="example_item">
+					<a href="comparison.html?qid=427">Example 2 - QID 427</a>
+					<br>
+					<audio controls class="player">
+						<source src="data/audio/719.wav" type="audio/wav">
+					</audio>
+				</div>
+			</div>
+			</section>
+
+			<section id="sec_citation">
+				<h2>Citation</h2>
+				<code id="citation">
+					@misc{morais2025investigatingmodalitycontributionaudio,
+						title={Investigating Modality Contribution in Audio LLMs for Music},
+						author={Giovana Morais and Magdalena Fuentes},
+						year={2025},
+						eprint={2509.20641},
+						archivePrefix={arXiv},
+						primaryClass={cs.LG},
+						url={https://arxiv.org/abs/2509.20641},
+					}
+				</code>
+			</section>
+
+			<section id="sec_disclaimer">
+				<h2>Disclaimer</h2>
+
+				<p>The visualizations were developed in
+				<a href="https://d3js.org/">D3.js</a> with the support of <a
+					href="https://gemini.google.com/app">Gemini</a>. As the lead developer of
+				this demo page, I (Giovana) am responsible for the implementation and
+				testing of this code.<br>
+				If you find anything wrong, let me know by sending an email to
+				giovana.morais@nyu.edu or by creating an issue the
+				<a href="https://github.com/giovana-morais/2025_investigating_mmshap_demo">GitHub
+					repo</a>.<br><br>
+				Muito obrigada and have a nice day!</p>
+			</section>
+		</main>
+	</body>
+
+	<footer>
+		<hr>
+		2025, Morais G. and Fuentes M., "Investigating Modality Contribution in Audio LLMs for Music"
+		<p style="font-size: xx-small; color: white; text-align: center">if you're
+		reading this, do yourself a favor and go listen to this <a
+			style="color: inherit;
+			"href="https://www.youtube.com/watch?v=2mwYk0Ta4do&list=RD2mwYk0Ta4do&index=1">beautiful song</a> by Urias
+	</footer>

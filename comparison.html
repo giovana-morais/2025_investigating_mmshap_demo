@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link rel="stylesheet" href="style.css">
+		<title>Demo Page - Investigating Modality Contribution in Audio LLMs for Music</title>
+	</head>
+
+	<body>
+		<script src="https://d3js.org/d3.v7.min.js"></script>
+		<script src="visualization.js"></script>
+
+		<nav style="border-bottom: 1px solid black">
+			<ol class="crumbs">
+				<li class="crumb"><a href="index.html">Home</a></li>
+				<li class="crumb" id="crumb_title">Comparison</li>
+			</ol>
+			<ul class="nav-links">
+					<li><a href="https://arxiv.org/pdf/2509.20641">Paper</a></li>
+					<li><a href="https://github.com/giovana-morais/2025_investigating_mmshap">Code</a></li>
+			</ul>
+		</nav>
+
+		<!-- <h1 id="qid">QID </h1> -->
+		<h2>Click on the answer token to visualize individual contributions</h2>
+		<audio controls class="player" id="audio-player">
+			<source src="data/audio/719.wav" type="audio/wav">
+		</audio>
+
+
+		<div id="grid-container">
+			<div id="qwen-fs-container"></div>
+			<div id="qwen-zs-container"></div>
+			<div id="mu-fs-container"></div>
+			<div id="mu-zs-container"></div>
+		</div>
+
+		<script src="init_loading.js"></script>
+	</body>
+
+	<footer>
+		<hr>
+		2025, Morais G. and Fuentes M., "Investigating Modality Contribution in Audio LLMs for Music"
+		<p style="font-size: xx-small; color: white; text-align: center">if you're
+		reading this, do yourself a favor and go listen to this <a
+			style="color: inherit;
+			"href="https://www.youtube.com/watch?v=2mwYk0Ta4do&list=RD2mwYk0Ta4do&index=1">beautiful song</a> by Urias
+	</footer>
+
+</html>
