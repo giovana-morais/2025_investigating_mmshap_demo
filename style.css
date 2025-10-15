@@ -7,6 +7,58 @@ body {
 	font-family: "Courier New", monospace;
 }
 
+nav {
+  display: flex;                 /* Use flexbox for alignment */
+  justify-content: space-between;  /* Pushes children to opposite ends */
+  align-items: center;           /* Vertically aligns items in the middle */
+  width: 100%;                   /* Ensures it spans the full width */
+  border-bottom: 1px solid black;/* The full-width bottom border */
+  padding: 5px 0;                /* Adds a little vertical space */
+}
+
+ol.crumbs {
+  list-style-type: none;
+  padding-left: 0;
+  margin: 0; /* Remove default margin */
+}
+
+.nav-links {
+  display: flex;      /* Aligns "Paper" and "Code" horizontally */
+  list-style: none;   /* Removes bullet points */
+  margin: 0;          /* Removes default margin */
+  padding: 0;         /* Removes default padding */
+  gap: 1.5em;         /* Adds space between the links */
+  font-weight: bold;  /* Optional: makes the links bolder */
+}
+
+/* Optional: Style the links themselves */
+.nav-links a {
+    color: black;
+    text-decoration: none;
+}
+
+.nav-links a:hover {
+    text-decoration: underline;
+}
+
+.crumbs ol {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+.crumb {
+  display: inline-block;
+}
+
+.crumb a::after {
+  display: inline-block;
+  color: black;
+  content: ">";
+  font-size: 80%;
+  font-weight: bold;
+  padding: 0 3px;
+}
+
 footer {
 	font-size: small;
 	color: #898989;
