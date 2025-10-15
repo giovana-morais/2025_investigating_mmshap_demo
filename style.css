@@ -31,7 +31,6 @@ ol.crumbs {
   font-weight: bold;  /* Optional: makes the links bolder */
 }
 
-/* Optional: Style the links themselves */
 .nav-links a {
     color: black;
     text-decoration: none;

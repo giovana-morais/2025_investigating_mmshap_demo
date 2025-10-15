@@ -33,12 +33,13 @@ async function populateExamples(jsonFilePath) {
             // Create the HTML content for the item
             // This includes the link and the audio player
             itemDiv.innerHTML = `
-                <a href="comparison.html?qid=${example.qid}">${example.prompt}</a>
+                <a href="comparison.html?qid=${example.qid}&prompt=${example.prompt}">${example.prompt}</a>
                 <br>
                 <audio controls class="player">
                     <source src="${example.audio_path}" type="audio/wav">
                     Your browser does not support the audio element.
                 </audio>
+								<br>
             `;
 
             // Decide which list to add the new item to

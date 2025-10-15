@@ -34,9 +34,14 @@ async function drawAllVisualizations() {
 	const paramsStr = window.location.search;
 	const searchParams = new URLSearchParams(paramsStr);
 	const qid = searchParams.get("qid");
+	const qid_prompt = searchParams.get("prompt");
 
 	if(qid) {
 		document.getElementById("audio-player").innerHTML = `<source src="data/audio/${qid}.wav" type="audio/wav">`;
+	}
+
+	if(qid_prompt) {
+		document.getElementById("crumb_title").innerHTML = qid_prompt;
 	}
 
 	const models = ["qwen", "mu"];
@@ -72,14 +77,17 @@ async function drawAllVisualizations() {
 					<button id="${plotId}-reset-button" class="reset-button">Reset View</button>
 				</div>
 
-				<table id="${plotId}-stats">
-					 <tr> <td></td> <td>min</td> <td>max</td> <td>median</td> </tr>
-						<tr id="${plotId}-audio-stats">
-							<td>Audio</td> <td></td> <td></td> <td></td>
-						</tr>
-						<tr id="${plotId}-question-stats">
-							<td>Text</td> <td></td> <td></td> <td></td> </tr>
-				</table>
+				<details>
+					<summary>Statistics</summary>
+					<table id="${plotId}-stats">
+						 <tr> <td></td> <td>min</td> <td>max</td> <td>median</td> </tr>
+							<tr id="${plotId}-audio-stats">
+								<td>Audio</td> <td></td> <td></td> <td></td>
+							</tr>
+							<tr id="${plotId}-question-stats">
+								<td>Text</td> <td></td> <td></td> <td></td> </tr>
+					</table>
+				</details>
 				<div id="${plotId}-question" class="question-container"></div>
 				<div id="${plotId}-answer" class="answer-container"></div>
 				<div id="${plotId}-audio"></div>
